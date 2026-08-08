@@ -1,0 +1,72 @@
+# CekDulu Repository Instructions
+
+## Current status: setup gate active
+
+Product implementation is paused.
+
+- Do not install dependencies, scaffold the application, create product source code, execute implementation tasks, run deployment, or start the holdout evaluation.
+- Documentation and setup changes are allowed only when the user explicitly requests them.
+- Release this gate only after the user explicitly states that setup is complete and authorizes implementation.
+- Do not infer readiness from credentials, package files, environment variables, or tooling that appears in the workspace.
+
+## Sources of truth by domain
+
+Use the document assigned to the relevant domain. There is no single linear precedence list.
+
+| Domain | Source |
+|---|---|
+| Official competition facts, requirements, and organizer ambiguities | `BITSMIKRO_CONTEXT_FILTERED.md` |
+| Product angle, urgency, rubric proof, ownership, scope cuts, deadlines, and submission checklist | `HACKATHON.md` |
+| Approved product behavior, UX, architecture, privacy, safety, and evaluation design | `docs/superpowers/specs/2026-08-08-cekdulu-design.md` |
+| Implementation order, file boundaries, interfaces, tests, and task commits | `docs/superpowers/plans/2026-08-08-cekdulu-implementation.md` |
+| Repository-agent behavior and the setup gate | `AGENTS.md` |
+| Vibecoding evidence created during implementation | `docs/ai/PROMPT_LOG.md` |
+
+If documents disagree within the same domain, stop and report the exact conflict to the user. Do not invent a cross-domain precedence rule or silently resolve an official ambiguity.
+
+## Product invariants
+
+- CekDulu is a risk-checking assistant, not a definitive fraud detector.
+- Never claim that a message is definitely safe or definitely fraudulent.
+- Raw screenshots remain in the browser.
+- Only redacted text confirmed by the user may cross the API boundary.
+- An AI timeout returns general safety guidance and Retry without a risk classification.
+- The MVP has no account, database, message history, URL crawling, owner lookup, automatic reporting, or conversational chatbot.
+
+## Evaluation integrity
+
+- Keep development fixtures and holdout cases separate.
+- The prompt-owning workflow must not inspect holdout message contents before the official run.
+- Describe `13/15` only as agreement with the team's expected classification, never as fraud-detection accuracy.
+- Never place holdout content, private screenshots, raw user messages, or personal data in prompts or the prompt log.
+- If the system changes after the official holdout run, treat the result as stale until a new independently written holdout is run.
+
+## Workflow after the setup gate is released
+
+- Follow `docs/superpowers/plans/2026-08-08-cekdulu-implementation.md` in order, beginning with Feature Zero.
+- Use the test-first cycle and verification commands specified in each task.
+- Do not claim success without fresh verification evidence.
+- Make focused commits and preserve unrelated user changes.
+- Do not modify `BITSMIKRO_CONTEXT_FILTERED.md` unless the user explicitly requests it.
+- Do not expand scope beyond the approved product design and `HACKATHON.md` commitments.
+
+## Vibecoding prompt log
+
+- Logging begins with implementation Task 1 after the setup gate is explicitly released.
+- Do not create retrospective entries for kickoff, brainstorming, design, planning, or repository setup.
+- Append one compact entry for each meaningful implementation decision before the related task commit.
+- Follow the format in `docs/ai/PROMPT_LOG.md`.
+- Do not record a team member, author, operator, or task owner.
+- Record tool/model only when directly exposed by the active environment/session or explicitly supplied by the user. Omit the field when unknown; never infer it.
+- Preserve the full prompt inside a collapsed block, keep summaries concise, and record the verification result and decision.
+- Treat the log as append-only. Correct an earlier entry with a new entry that references it.
+- Never record API keys, secrets, personal data, raw private messages, or holdout cases.
+
+## Repository hygiene
+
+- Preserve untracked and unrelated user files.
+- Use `apply_patch` for file edits.
+- Never add secrets to Git.
+- Before committing, inspect the diff and run checks appropriate to the files changed.
+- Product implementation remains paused until the setup gate is explicitly released.
+

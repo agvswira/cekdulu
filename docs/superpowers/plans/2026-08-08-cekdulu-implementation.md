@@ -99,7 +99,7 @@
 - Create: `src/app/globals.css`
 - Create: `src/components/brand-header.tsx`
 - Test: `src/components/brand-header.test.tsx`
-- Create: `docs/ai/PROMPT_LOG.md`
+- Modify: `docs/ai/PROMPT_LOG.md`
 - Modify: `.gitignore`
 
 **Interfaces:**
@@ -270,18 +270,9 @@ export function BrandHeader() {
 
 Define these exact root tokens in `globals.css`: `--ink: #132c3e`, `--muted: #58717b`, `--paper: #f6f2e8`, `--surface: #fffdf7`, `--trust: #0e7c73`, `--trust-soft: #e2f3ed`, `--warning: #e08a15`, `--warning-soft: #fff0cf`, `--danger: #b83a2e`, `--line: #ddd8cc`, `--radius-lg: 20px`, and `--shadow: 0 18px 45px rgba(19,44,62,.10)`. Implement `layout.tsx` metadata with title `CekDulu — Periksa Pesan Sebelum Bertindak` and a temporary home page containing the approved headline `Cek pesannya. Lindungi keputusanmu.`.
 
-- [ ] **Step 6: Create the real prompt-log format**
+- [ ] **Step 6: Append the first real implementation entry**
 
-```md
-# CekDulu Vibecoding Prompt Log
-
-Each entry records: ID/time, member, tool/model, goal, constraints, full prompt,
-response summary, verification, decision, and related files/commit.
-
-Personal data and API keys are never recorded.
-```
-
-Append the real Task 1 interaction below this header.
+Use the compact format already defined in `docs/ai/PROMPT_LOG.md`. Append the real Task 1 interaction under `Entri implementasi`, remove the `Belum ada entri` sentence, and keep the full prompt inside its collapsed block. Do not add person/owner metadata. Add tool/model only when it is directly known; otherwise omit that line.
 
 - [ ] **Step 7: Verify the shell**
 
