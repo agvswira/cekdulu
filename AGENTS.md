@@ -30,6 +30,16 @@ If documents disagree within the same domain, stop and report the exact conflict
 - Do not use the skill to change the approved product scope, the Calm Guardian visual direction, or any privacy or safety requirement.
 - Do not change the approved user flow based on a skill recommendation without explicit user approval.
 
+## Sol Advisor Boundary
+
+- Superpowers remains the primary engineering workflow.
+- Sol Advisor is an optional orchestration lane only for complex or high-risk work, difficult debugging, or independent/final review.
+- Routine or local tasks do not require Sol Advisor.
+- `ui-ux-pro-max` remains the specialist UI/UX skill.
+- Sol Advisor must not change the approved scope, Calm Guardian direction, privacy or safety requirements, approved user flow, design spec, or implementation plan without explicit user approval.
+- Treat worker or subagent reports as claims until the parent inspects the actual diff and runs verification independently.
+- Luna/Max requires explicit user authorization.
+
 ## Product invariants
 
 - CekDulu is a risk-checking assistant, not a definitive fraud detector.
