@@ -412,3 +412,65 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** P-012 dikoreksi secara append-only; semua findings final review diterima dan diperbaiki melalui TDD tanpa perubahan scope, design, privacy, atau safety.
 
 **Artefak:** `src/features/message-input/redaction.ts` · `src/features/message-input/redaction.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-014 · Task 6 · 2026-08-08 17:31 WITA
+
+**Tujuan:** Tambahkan intake screenshot atau teks, OCR lokal, dan review redaksi eksplisit tanpa mengirim file atau teks mentah dari komponen konfirmasi.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 6 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 6;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 6.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Validasi PNG/JPEG maksimal 5 MiB, adapter Tesseract lokal dengan progress dan terminasi worker, intake unggah/tempel, serta review editable dengan token count dan konfirmasi redacted-only ditambahkan. Signature mock OCR disesuaikan secara test-only agar typecheck dan lint bersih; tidak ada perubahan scope, design, privacy, atau safety. Sol Advisor tidak digunakan karena kontrak Task 6 sudah rinci; `ui-ux-pro-max` hanya memberi panduan label, alert, progress, dan client-leaf yang disaring terhadap approved design.
+
+**Verifikasi:** Baseline `npm test` → 8 file/48 tes lulus; RED file validation → gagal karena modul belum ada lalu GREEN 5/5; RED OCR → gagal karena modul belum ada lalu GREEN 3/3; RED intake/review → dua suite gagal karena modul belum ada lalu GREEN 7/7. Verification awal menemukan typecheck mock tuple dan tiga lint warning test-only; setelah koreksi signature, fresh `npm test` → 12 file/63 tes lulus, `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Public deployment Task 4 tetap **pending** dan tidak dianggap lulus.
+
+**Keputusan:** Diterima untuk satu final review; implementasi menjaga screenshot di jalur OCR browser dan callback konfirmasi hanya meneruskan `redactedText`.
+
+**Artefak:** `src/features/message-input/*` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-015 · Task 6 · 2026-08-08 17:37 WITA
+
+**Tujuan:** Koreksi P-014 dengan hasil final review dan cegah hasil OCR lama diteruskan setelah intake tidak lagi aktif.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 6 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 6;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 6.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Satu final review menemukan dua Important: hasil OCR yang selesai setelah unmount dapat meneruskan state lama, dan P-014 tersisip sebelum P-013. Intake kini mengabaikan progress, callback, error, dan cleanup state dari operasi OCR yang sudah stale; P-014 dipindahkan tanpa perubahan ke ujung log setelah P-013, lalu koreksi ini dicatat append-only. Tidak dilakukan review kedua.
+
+**Verifikasi:** RED unmount regression → 1 dari 6 tes intake gagal karena `onReady` menerima hasil OCR lama; setelah mounted/current-operation guard → focused intake 6/6 lulus. Full final verification dijalankan setelah entry ini. Public deployment Task 4 tetap **pending**.
+
+**Keputusan:** P-014 dikoreksi secara append-only; kedua findings diterima setelah reproduksi aktual dan diperbaiki tanpa mengubah scope, design, privacy, atau safety.
+
+**Artefak:** `src/features/message-input/message-intake.tsx` · `src/features/message-input/message-intake.test.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
