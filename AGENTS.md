@@ -24,6 +24,12 @@ Use the document assigned to the relevant domain. There is no single linear prec
 
 If documents disagree within the same domain, stop and report the exact conflict to the user. Do not invent a cross-domain precedence rule or silently resolve an official ambiguity.
 
+## UI/UX Skill Boundary
+
+- Use `ui-ux-pro-max` only for UI/UX implementation or review, and treat its recommendations as advisory input that must be filtered against the approved CekDulu design spec.
+- Do not use the skill to change the approved product scope, the Calm Guardian visual direction, or any privacy or safety requirement.
+- Do not change the approved user flow based on a skill recommendation without explicit user approval.
+
 ## Product invariants
 
 - CekDulu is a risk-checking assistant, not a definitive fraud detector.
