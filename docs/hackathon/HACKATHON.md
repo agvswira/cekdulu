@@ -198,19 +198,42 @@ Use 14 August as the safe readiness target until the organizer resolves the 14/1
 - **13 Aug:** rehearse with deployment failure and API-timeout scenarios.
 - **14 Aug:** remain ready to pitch.
 
+## Proposal-to-shipped-product alignment
+
+Do not present a row as shipped when its evidence is still pending.
+
+| Proposal claim | Screen/behavior | Test evidence | Live demo step | Status |
+|---|---|---|---|---|
+| Screenshot and paste intake | `Periksa pesan` with image/text fieldset | `message-intake.test.tsx`; `check-message-flow.test.tsx` | `docs/DEMO.md` 0:20–1:05 | Verified locally |
+| Browser OCR with editable correction | OCR progress then `Tinjau dan samarkan` | `ocr.test.ts`; integrated flow tests | 0:20–1:05 | Verified locally |
+| Browser redaction before API | Redaction counts and preview | `redaction.test.ts`; `privacy-boundary.spec.ts` | 0:45–1:05 | Verified locally |
+| Structured explainable risk check | Risk heading, summary, evidence, actions, limitations | schema/service/route tests; `core-flow.spec.ts` | 1:05–2:25 | Verified locally with intercepted E2E; live AI still needs deployed rehearsal |
+| Graceful timeout without invented verdict | `Analisis belum tersedia`, safety steps, Retry | route and integrated flow tests; `accessibility.spec.ts` | Separate timeout rehearsal | Verified locally |
+| Calm Guardian desktop/mobile UX | Responsive intake/review/result states | desktop/mobile accessibility E2E | Whole main choreography | Verified locally |
+| Privacy-first, no database/history/URL crawl | Browser OCR, redacted-only request, no persistence layer | privacy E2E and code inspection | 2:25–2:40 | Verified within documented application boundary |
+| Expected-classification evaluation | JSON/Markdown aggregate report | evaluation validator/runner tests | Product-mastery explanation only | Harness verified; official private holdout **not run** |
+| Public deployment and fresh-browser flow | Public URL on release commit | Local build is insufficient | Full choreography plus fresh-browser checklist | **Pending** |
+
+Features already cut remain excluded from proposal claims: account/login, database/history, owner lookup, URL crawling, automatic reporting, chatbot, browser extension, analytics dashboard, definitive safe/scam verdicts, and timeout classifier.
+
+The known organizer conflicts about section 3.5, chapter structure, pitching date, and originality wording remain unresolved below; this alignment table does not present an assumption as an official resolution.
+
 ## Submission checklist
 
-- Public deployment link
-- Functional core flow
-- Source code and supporting assets
-- Setup/configuration documentation
-- Proposal PDF
-- Demo video showing local setup and all core features
-- Prompt/share-chat evidence
-- Holdout evaluation artifact with careful claim wording
-- Instagram UI/demo post with `@bitsmikro` and `@mikroskil`
-- Instagram post link included in submission attachments
-- Package under 1 GB and verified on a clean device/browser
+| Artifact | Recorded value/status |
+|---|---|
+| Release commit hash | Pending — select after Task 10 commit and deployment verification. |
+| Public deployment URL | Pending — no public deployment verified. |
+| Functional core flow | Verified locally; public fresh-browser verification pending. |
+| Source code and supporting assets | Repository branch available; final source package pending. |
+| Setup/configuration documentation | `README.md`, `.env.example`, `docs/PRIVACY.md`, `docs/DEMO.md`. |
+| Proposal PDF | Pending — no PDF artifact recorded in repository. |
+| Demo-video link | Pending — record only after backup video uses deployed release commit. |
+| Prompt/share-chat evidence link | Repository artifact: `docs/ai/PROMPT_LOG.md`; external accessible link pending. |
+| Aggregate private-holdout result | Pending — official private holdout has not been run; never call development results accuracy. |
+| Instagram UI/demo post | Pending — must include `@bitsmikro` and `@mikroskil`. |
+| Instagram post link | Pending — include in submission attachments after publication. |
+| Package under 1 GB and clean-device/browser verification | Pending. |
 
 ## Competition ambiguities to confirm
 

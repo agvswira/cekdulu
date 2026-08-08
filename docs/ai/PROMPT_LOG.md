@@ -629,3 +629,69 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** P-019 dikoreksi secara append-only; kedua findings diterima dan diperbaiki melalui TDD tanpa perubahan evaluation claim, scope, design, privacy, atau safety.
 
 **Artefak:** `evaluation/dataset-schema.ts` · `scripts/evaluate.ts` · `scripts/evaluate.test.ts` · `scripts/validate-evaluation-dataset.ts` · `scripts/validate-evaluation-dataset.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-021 · Task 10 · 2026-08-08 19:06 WITA
+
+**Tujuan:** Siapkan environment contract, setup/deployment documentation, privacy evidence, timed demo, proposal alignment, dan submission checklist yang membedakan bukti lokal dari artefak eksternal pending.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 10 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 10;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, safety, atau evaluation integrity boleh dilakukan langsung dan dicatat.
+
+Jangan membuat, membaca, menjalankan, atau menggunakan private holdout kecuali Task 10 secara eksplisit mengharuskannya.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 10.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** `.env.example`, README, privacy boundary, demo choreography 2:40, timeout rehearsal, proposal-to-shipped alignment, dan submission status dibuat. Environment key didokumentasikan server-only; docs hanya mengklaim browser OCR, component-memory raw text, confirmed redacted same-origin request, no database/request-body logging/URL crawl, serta classification-free fallback yang sudah diuji. Public deployment, fresh-browser rehearsal, release URL/hash, video, proposal PDF, aggregate holdout, Instagram, dan clean-device package tetap ditandai pending. Sol Advisor tidak digunakan karena Task 10 berupa dokumentasi faktual dengan source/test evidence yang dapat diperiksa langsung.
+
+**Verifikasi:** Prerequisite runtime → Node v26.4.0/npm 12.0.2 dan lockfile tersedia. Official IASC homepage serta OJK RDKB Mei 2026 page diverifikasi sebagai primary-source links. Full local release gate: `npm test` → 15 file/85 tes lulus; `npm run test:e2e` → 11 lulus/1 intentional desktop skip; `npm run typecheck`, `npm run lint`, `npm run build` → exit 0; `npm audit --omit=dev` → 0 vulnerability; `git diff --check` → exit 0. E2E memakai local interception dan tidak dianggap public deployment verification. Private holdout tidak dibuat, dibaca, dijalankan, atau digunakan.
+
+**Keputusan:** Diterima untuk satu final review; dokumentasi manusia diverifikasi terhadap actual commands/source/tests tanpa menambahkan change-detector test yang hanya menggrep prose. Step 6 deployment/fresh-browser tetap **pending** sesuai instruksi pengguna dan Task 4 tidak dianggap lulus.
+
+**Artefak:** `.env.example` · `README.md` · `docs/DEMO.md` · `docs/PRIVACY.md` · `docs/hackathon/HACKATHON.md` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-022 · Task 10 · 2026-08-08 19:11 WITA
+
+**Tujuan:** Koreksi P-021 berdasarkan satu final review agar dokumentasi demo dan privasi membedakan bukti aktual dari klaim yang belum terbukti.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 10 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 10;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, safety, atau evaluation integrity boleh dilakukan langsung dan dicatat.
+
+Jangan membuat, membaca, menjalankan, atau menggunakan private holdout kecuali Task 10 secara eksplisit mengharuskannya.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 10.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Satu final review menemukan satu Important dan tiga Minor. Timeout rehearsal kini menahan `/api/analyze` sampai abort 15 detik, sedangkan Offline dinyatakan hanya sebagai immediate unavailable path; demo menyebut larangan verdict definitif. README menyatakan target kurang dari 60 detik sebagai tujuan yang masih menunggu deployment proof, sementara privacy wording membatasi result dan OCR claims pada state serta test evidence aktual. Tidak dilakukan review kedua.
+
+**Verifikasi:** Findings dibandingkan dengan `AbortController` 15 detik, fake-timer test, OCR adapter test, dan component-state implementation aktual. Pemeriksaan wording terfokus lulus; full final verification dijalankan setelah entry ini. Public deployment Task 4 tetap **pending** dan private holdout tidak dibuat, dibaca, dijalankan, atau digunakan.
+
+**Keputusan:** P-021 dikoreksi secara append-only; seluruh findings diterima setelah diverifikasi dan diperbaiki tanpa perubahan scope, design, privacy, safety, atau evaluation integrity.
+
+**Artefak:** `README.md` · `docs/DEMO.md` · `docs/PRIVACY.md` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
