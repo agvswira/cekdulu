@@ -1327,7 +1327,7 @@ At the official checkpoint, run the private holdout exactly once and commit only
 - Create: `docs/DEMO.md`
 - Create: `docs/PRIVACY.md`
 - Modify: `docs/ai/PROMPT_LOG.md`
-- Modify: `HACKATHON.md`
+- Modify: `docs/hackathon/HACKATHON.md`
 
 **Interfaces:**
 - Consumes: all verified commands, deployed URL, prompt evidence, and aggregate evaluation output.
@@ -1387,12 +1387,12 @@ Create or reuse the Vercel project named `cekdulu`; use `npx vercel --prod` afte
 
 - [ ] **Step 7: Reconcile proposal and shipped product**
 
-Update the alignment section in `HACKATHON.md` so each proposal claim points to a screen, test, and live demo step. Remove any proposal claim whose feature was cut. Preserve the known organizer ambiguities without presenting an assumption as an official resolution.
+Update the alignment section in `docs/hackathon/HACKATHON.md` so each proposal claim points to a screen, test, and live demo step. Remove any proposal claim whose feature was cut. Preserve the known organizer ambiguities without presenting an assumption as an official resolution.
 
 - [ ] **Step 8: Log the final verification and commit**
 
 ```bash
-git add .env.example README.md docs HACKATHON.md
+git add .env.example README.md docs
 git commit -m "docs: prepare CekDulu demo and deployment"
 ```
 

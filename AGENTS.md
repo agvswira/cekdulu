@@ -15,8 +15,8 @@ Use the document assigned to the relevant domain. There is no single linear prec
 
 | Domain | Source |
 |---|---|
-| Official competition facts, requirements, and organizer ambiguities | `BITSMIKRO_CONTEXT_FILTERED.md` |
-| Product angle, urgency, rubric proof, ownership, scope cuts, deadlines, and submission checklist | `HACKATHON.md` |
+| Official competition facts, requirements, and organizer ambiguities | `docs/hackathon/BITSMIKRO_CONTEXT_FILTERED.md` |
+| Product angle, urgency, rubric proof, ownership, scope cuts, deadlines, and submission checklist | `docs/hackathon/HACKATHON.md` |
 | Approved product behavior, UX, architecture, privacy, safety, and evaluation design | `docs/superpowers/specs/2026-08-08-cekdulu-design.md` |
 | Implementation order, file boundaries, interfaces, tests, and task commits | `docs/superpowers/plans/2026-08-08-cekdulu-implementation.md` |
 | Repository-agent behavior and the setup gate | `AGENTS.md` |
@@ -47,8 +47,8 @@ If documents disagree within the same domain, stop and report the exact conflict
 - Use the test-first cycle and verification commands specified in each task.
 - Do not claim success without fresh verification evidence.
 - Make focused commits and preserve unrelated user changes.
-- Do not modify `BITSMIKRO_CONTEXT_FILTERED.md` unless the user explicitly requests it.
-- Do not expand scope beyond the approved product design and `HACKATHON.md` commitments.
+- Do not modify `docs/hackathon/BITSMIKRO_CONTEXT_FILTERED.md` unless the user explicitly requests it.
+- Do not expand scope beyond the approved product design and `docs/hackathon/HACKATHON.md` commitments.
 
 ## Vibecoding prompt log
 
