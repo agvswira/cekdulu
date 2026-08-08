@@ -1,0 +1,72 @@
+[
+  {
+    "id": "dev-01",
+    "category": "clearly_suspicious",
+    "message": "Paket Anda gagal dikirim. Klik [URL_1] sekarang dan kirim kode OTP agar paket tidak dimusnahkan.",
+    "expectedRisk": "high",
+    "rationale": "Menggabungkan tekanan waktu, tautan tidak terverifikasi, dan permintaan kredensial rahasia."
+  },
+  {
+    "id": "dev-02",
+    "category": "clearly_suspicious",
+    "message": "Rekening Anda diblokir malam ini. Transfer biaya verifikasi ke [ACCOUNT_1] lalu hubungi [PHONE_1].",
+    "expectedRisk": "high",
+    "rationale": "Mengatasnamakan bank, mengancam pemblokiran, dan meminta transfer ke rekening melalui pesan."
+  },
+  {
+    "id": "dev-03",
+    "category": "subtle_manipulation",
+    "message": "Ini nomor baru Kakak. Tolong belikan pulsa sekarang, nanti sore langsung Kakak ganti uangnya.",
+    "expectedRisk": "medium",
+    "rationale": "Memakai kedekatan palsu dan permintaan mendesak, tetapi tidak menyertakan tautan atau kredensial."
+  },
+  {
+    "id": "dev-04",
+    "category": "subtle_manipulation",
+    "message": "Agar pesanan marketplace lebih cepat, lanjutkan pembayaran di luar aplikasi melalui [URL_1].",
+    "expectedRisk": "high",
+    "rationale": "Mendorong pengguna keluar dari perlindungan platform dan menuju tautan yang tidak terverifikasi."
+  },
+  {
+    "id": "dev-05",
+    "category": "ambiguous",
+    "message": "Kami sedang mengumpulkan donasi untuk korban banjir. Informasi dan rekening tersedia di [URL_1].",
+    "expectedRisk": "medium",
+    "rationale": "Tujuannya mungkin sah, tetapi identitas penggalang dan tautan belum dapat diverifikasi dari pesan."
+  },
+  {
+    "id": "dev-06",
+    "category": "ambiguous",
+    "message": "Panitia mengingatkan formulir kegiatan ditutup besok. Silakan isi melalui [URL_1] jika belum mendaftar.",
+    "expectedRisk": "medium",
+    "rationale": "Ada tenggat dan tautan, namun tidak ada permintaan uang atau data rahasia yang eksplisit."
+  },
+  {
+    "id": "dev-07",
+    "category": "legitimate_urgency",
+    "message": "Penerbangan Anda hari ini berubah jadwal. Periksa pembaruan langsung melalui aplikasi resmi maskapai.",
+    "expectedRisk": "low",
+    "rationale": "Pesan mendesak tetapi mengarahkan pengguna memeriksa aplikasi resmi tanpa tautan atau permintaan data."
+  },
+  {
+    "id": "dev-08",
+    "category": "legitimate_urgency",
+    "message": "Pengisian mata kuliah ditutup pukul 16.00. Masuk melalui portal kampus yang biasa Anda gunakan.",
+    "expectedRisk": "low",
+    "rationale": "Memuat tenggat yang wajar dan meminta penggunaan portal yang sudah dikenal, bukan tautan dalam pesan."
+  },
+  {
+    "id": "dev-09",
+    "category": "normal",
+    "message": "Rapat keluarga dilaksanakan Minggu pukul 10.00 di rumah Nenek. Mohon kabari jika tidak bisa hadir.",
+    "expectedRisk": "low",
+    "rationale": "Pesan informasional tanpa tautan, uang, kredensial, penyamaran identitas, atau tekanan manipulatif."
+  },
+  {
+    "id": "dev-10",
+    "category": "normal",
+    "message": "Paket telah tiba di pusat distribusi dan diperkirakan dikirim besok. Tidak ada tindakan yang diperlukan.",
+    "expectedRisk": "low",
+    "rationale": "Hanya memberi pembaruan status dan secara eksplisit tidak meminta tindakan dari penerima."
+  }
+]

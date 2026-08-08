@@ -567,3 +567,65 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** P-017 dikoreksi secara append-only; semua findings diterima setelah diverifikasi terhadap DOM/CSS aktual dan diperbaiki tanpa perubahan scope, design, privacy, atau safety.
 
 **Artefak:** `e2e/accessibility.spec.ts` · `src/app/globals.css` · `src/features/check-message/check-message-flow.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-019 · Task 9 · 2026-08-08 18:49 WITA
+
+**Tujuan:** Bangun harness evaluasi development/holdout yang memvalidasi distribusi dataset, menjaga holdout tetap privat, dan melaporkan agreement tanpa klaim accuracy.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 9 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 9;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 9.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Schema dan validator mewajibkan 10 development cases dengan dua per kategori, 15 holdout cases dengan tiga per kategori, unique normalized messages, prefix ID sesuai dataset, dan tanpa overlap. Runner mengirim kasus secara sequential, memvalidasi structured analysis, memisahkan unavailable tanpa risk coercion, serta menulis JSON/Markdown body-free dengan wording expected-classification agreement. Sepuluh fixture development sintetis ditambahkan dan `evaluation/holdout.private.json` di-ignore; file holdout tidak dibuat, dibaca, atau dijalankan. Sol Advisor tidak digunakan karena kontrak plan rinci dan seluruh risiko dapat diuji deterministik.
+
+**Verifikasi:** Baseline `npm test` → 13 file/71 tes lulus. Dataset RED → import validator belum ada, lalu GREEN 6/6; file-boundary RED → fungsi belum ada, lalu GREEN 7/7. Runner RED → modul belum ada, lalu GREEN 3/3; file runner RED → fungsi belum ada, lalu focused `npm test -- scripts` → 2 file/11 tes lulus. Typecheck awal menemukan `noUncheckedIndexedAccess` pada fixture test; setelah non-null assertion test-only → focused 11/11 dan typecheck lulus. `npm run eval:validate -- --development evaluation/development.json` → development 10. Development-only evaluation lokal → total 10, schema-valid 0, unavailable 10, agreement 0/10 karena seluruh endpoint response adalah 503 pada runtime lokal tanpa API key yang terdeteksi; hasil ini tidak dianggap model, holdout, atau deployment pass. Fresh `npm test` → 15 file/82 tes lulus; `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Public deployment Task 4 tetap **pending**.
+
+**Keputusan:** Diterima untuk satu final review; claim label secara eksplisit menyatakan agreement bukan fraud-detection accuracy, report tidak menyimpan message/rationale, dan development result reproducible tidak dimasukkan ke commit sesuai Step 7.
+
+**Artefak:** `evaluation/dataset-schema.ts` · `evaluation/development.json` · `scripts/evaluate.ts` · `scripts/evaluate.test.ts` · `scripts/validate-evaluation-dataset.ts` · `scripts/validate-evaluation-dataset.test.ts` · `.gitignore` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-020 · Task 9 · 2026-08-08 18:55 WITA
+
+**Tujuan:** Koreksi P-019 berdasarkan satu final review agar malformed private JSON tidak dapat bocor melalui error dan prefix guard diuji secara independen.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 9 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 9;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 9.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Satu final review menemukan satu Important dan satu Minor: raw `JSON.parse` error dapat memuat fragmen private input, dan prefix test tertutup oleh rationale invalid. File-boundary parsing kini mengganti seluruh parse failure dengan error generik tanpa source fragment; prefix dan malformed-field cases diuji terpisah. Tidak dilakukan review kedua.
+
+**Verifikasi:** Reproduksi Node aktual menampilkan fragmen `SYNTHETIC_` di `SyntaxError.message`. RED focused run → 2 dari 14 tes gagal karena validator dan runner meneruskan fragmen tersebut; setelah safe parsing boundary → focused 14/14 lulus. Full final verification dijalankan setelah entry ini. Holdout private tetap tidak dibuat, dibaca, atau dijalankan; public deployment Task 4 tetap **pending**.
+
+**Keputusan:** P-019 dikoreksi secara append-only; kedua findings diterima dan diperbaiki melalui TDD tanpa perubahan evaluation claim, scope, design, privacy, atau safety.
+
+**Artefak:** `evaluation/dataset-schema.ts` · `scripts/evaluate.ts` · `scripts/evaluate.test.ts` · `scripts/validate-evaluation-dataset.ts` · `scripts/validate-evaluation-dataset.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
