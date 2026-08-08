@@ -255,3 +255,98 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** Diterima untuk final verification dan satu final review. Sol Advisor tidak digunakan karena interface dan perilaku safety telah ditetapkan secara lengkap dalam implementation plan; penyesuaian SDK tidak mengubah scope, design, atau privacy.
 
 **Artefak:** `src/server/analysis/*` · `src/app/api/analyze/*` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-009 · Task 4 · 2026-08-08 16:59 WITA
+
+**Tujuan:** Kirim Feature Zero melalui sample sintetis yang sudah disamarkan, result renderer, dan fallback aman tanpa klasifikasi.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 4 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 4;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Jika verification lulus dan review clean, commit Task 4.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Sample sintetis, client flow `idle | analyzing | result | unavailable`, dedicated result/fallback views, integrasi homepage, dan hierarchy Calm Guardian responsif ditambahkan. Test memakai cleanup eksplisit karena Vitest globals tidak mengaktifkan auto-cleanup; output generated `next dev` pada `AGENTS.md` dan `next-env.d.ts` dikembalikan agar tidak masuk scope.
+
+**Verifikasi:** Baseline `npm test` → 6 file/29 tes lulus; RED focused test → gagal karena `check-message-flow.tsx` belum ada; GREEN awal mengungkap DOM test pertama bocor, test 503 lulus sendiri, lalu setelah explicit cleanup focused run → 1 file/2 tes lulus; typecheck, lint, dan build → exit 0. Browser lokal memverifikasi renderer success melalui fixture kontrak API, fallback aktual 503 tanpa `riskLevel`, link IASC, Retry, viewport 375 px dan landscape tanpa overflow, reduced-motion, serta large text. Public deployment belum dijalankan karena credential/runtime Vercel dan Gemini tidak tersedia.
+
+**Keputusan:** Direvisi untuk menahan deployment, final review, dan commit sampai pengguna menentukan perlakuan Step 6. Sol Advisor tidak digunakan karena Task 4 bounded; `ui-ux-pro-max` digunakan hanya untuk review accessibility/responsiveness terhadap design yang sudah disetujui.
+
+**Artefak:** `src/features/check-message/*` · `src/app/page.tsx` · `src/app/globals.css` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-010 · Task 4 · 2026-08-08 16:59 WITA
+
+**Tujuan:** Selesaikan commit Task 4 berdasarkan verification lokal sambil mempertahankan deployment publik sebagai pekerjaan pending yang eksplisit.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Saya mengizinkan deployment publik Step 6 ditunda sampai setelah commit Task 4.
+
+Selesaikan Task 4 dengan kondisi:
+- catat deployment sebagai verification yang masih pending karena credential/runtime belum tersedia;
+- lakukan satu final review;
+- update prompt log secara faktual;
+- commit hanya perubahan Task 4 yang sudah terverifikasi lokal.
+
+Jangan menganggap public deployment sudah lulus.
+Jangan memasukkan secret atau token ke repository.
+
+Commit message:
+feat: deliver Feature Zero sample flow
+
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Deployment publik tetap dicatat pending; scope commit dibatasi pada implementasi, tes, styling, integrasi halaman, dan prompt log Task 4 yang diverifikasi lokal. Tidak ada credential, secret, token, atau konfigurasi deployment yang ditambahkan.
+
+**Verifikasi:** Fresh `npm test` → 7 file/31 tes lulus; `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Fresh production-local browser → title dan success renderer tampil tanpa console error; link IASC benar; fallback aktual memiliki Retry dan nol label risiko; mobile 375 px, landscape, large text tidak overflow; loading memakai `aria-live="polite"` dan reduced-motion menurunkan animation duration. Public deployment → **pending**, karena credential/runtime belum tersedia.
+
+**Keputusan:** Diterima untuk satu final review dan commit lokal Task 4; deployment publik tidak dianggap lulus dan harus diverifikasi terpisah setelah runtime tersedia.
+
+**Artefak:** `src/features/check-message/*` · `src/app/page.tsx` · `src/app/globals.css` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-011 · Task 4 · 2026-08-08 17:06 WITA
+
+**Tujuan:** Koreksi P-010 dengan hasil final review dan pastikan daftar hasil tetap valid ketika model mengembalikan item duplikat.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Saya mengizinkan deployment publik Step 6 ditunda sampai setelah commit Task 4.
+
+Selesaikan Task 4 dengan kondisi:
+- catat deployment sebagai verification yang masih pending karena credential/runtime belum tersedia;
+- lakukan satu final review;
+- update prompt log secara faktual;
+- commit hanya perubahan Task 4 yang sudah terverifikasi lokal.
+
+Jangan menganggap public deployment sudah lulus.
+Jangan memasukkan secret atau token ke repository.
+
+Commit message:
+feat: deliver Feature Zero sample flow
+
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Satu final review menemukan satu Minor: key React berbasis konten tidak dijamin unik oleh schema. Composite keys ditambah index agar signals, actions, dan limitations duplikat tetap dirender tanpa warning; tidak ada Critical atau Important.
+
+**Verifikasi:** RED duplicate-item test → 1 dari 3 tes gagal dan mengamati tiga duplicate-key warnings; setelah koreksi key, `npm test -- src/features/check-message/check-message-flow.test.tsx` → 1 file/3 tes lulus tanpa warning. Full final verification dijalankan setelah entry ini. Public deployment tetap **pending**.
+
+**Keputusan:** P-010 dikoreksi secara append-only; Minor review diterima sebagai penyesuaian teknis kecil tanpa perubahan scope, design, privacy, atau safety. Tidak dilakukan review kedua.
+
+**Artefak:** `src/features/check-message/analysis-result-view.tsx` · `src/features/check-message/check-message-flow.test.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
