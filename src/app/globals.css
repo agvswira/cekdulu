@@ -73,6 +73,7 @@ button:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
+  min-height: 2.75rem;
   color: var(--ink);
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(1.35rem, 4vw, 1.65rem);
@@ -208,6 +209,137 @@ h1 {
 .checkPanel h4 {
   margin: 0;
   font-size: 1.08rem;
+}
+
+.checkPanel [data-stage-heading] {
+  scroll-margin-top: 1.5rem;
+}
+
+.checkPanel [data-stage-heading]:focus {
+  border-radius: 0.35rem;
+  outline: 3px solid var(--trust);
+  outline-offset: 6px;
+}
+
+.checkPanel fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 1.5rem 0;
+  border: 0;
+}
+
+.checkPanel legend {
+  width: 100%;
+  margin-bottom: 0.15rem;
+  font-weight: 800;
+}
+
+.checkPanel fieldset label {
+  display: flex;
+  min-width: 0;
+  min-height: 3rem;
+  flex: 1 1 9rem;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.checkPanel fieldset label:has(input:checked) {
+  border-color: var(--trust);
+  background: var(--trust-soft);
+}
+
+.checkPanel input[type="radio"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  accent-color: var(--trust);
+}
+
+.checkPanel label[for] {
+  display: block;
+  margin-top: 1.25rem;
+  font-weight: 800;
+}
+
+.checkPanel input[type="file"],
+.checkPanel textarea {
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.checkPanel input[type="file"] {
+  padding: 0.45rem;
+}
+
+.checkPanel input[type="file"]::file-selector-button {
+  min-height: 2.5rem;
+  margin-right: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  border: 0;
+  border-radius: 0.55rem;
+  background: var(--trust-soft);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.checkPanel textarea {
+  min-height: 11rem;
+  padding: 0.85rem;
+  resize: vertical;
+}
+
+.checkPanel input:focus-visible,
+.checkPanel textarea:focus-visible {
+  outline: 3px solid var(--trust);
+  outline-offset: 3px;
+}
+
+.checkPanel form .primaryButton {
+  margin-top: 1rem;
+}
+
+.checkPanel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.checkPanel pre {
+  max-width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--paper);
+  font: inherit;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.checkPanel progress {
+  width: min(100%, 20rem);
+  min-height: 1rem;
+  accent-color: var(--trust);
+}
+
+.checkPanel > .samplePanel {
+  padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
 }
 
 .sectionKicker {
@@ -510,6 +642,23 @@ h1 {
   .privacyCue {
     white-space: normal;
   }
+
+  .checkPanel {
+    padding: 1.25rem;
+  }
+
+  .checkPanel fieldset label {
+    flex-basis: 100%;
+  }
+
+  .privacyCue,
+  .eyebrow,
+  .sectionKicker,
+  .sampleMessage span,
+  .samplePrivacy,
+  .evidenceCard .signalCategory {
+    font-size: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -520,5 +669,9 @@ h1 {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .loadingMark {
+    animation: none;
   }
 }

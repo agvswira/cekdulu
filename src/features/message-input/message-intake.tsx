@@ -103,7 +103,9 @@ export function MessageIntake({
 
   return (
     <section aria-labelledby="message-intake-title">
-      <h2 id="message-intake-title">Periksa pesan</h2>
+      <h2 data-stage-heading id="message-intake-title" tabIndex={-1}>
+        Periksa pesan
+      </h2>
       <p>
         Gambar dibaca di perangkat ini. Cek dan samarkan teks sebelum mengirimnya
         untuk analisis.
@@ -169,7 +171,7 @@ export function MessageIntake({
             onChange={(event) => setPastedText(event.target.value)}
           />
           <p id={textHelpId}>Masukkan sedikitnya 20 karakter agar pesan dapat ditinjau.</p>
-          <button type="submit" disabled={!usablePastedText}>
+          <button className="primaryButton" type="submit" disabled={!usablePastedText}>
             Tinjau pesan
           </button>
         </form>

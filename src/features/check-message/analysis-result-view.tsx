@@ -26,7 +26,9 @@ export function AnalysisResultView({ analysis }: AnalysisResultViewProps) {
         <p className="sectionKicker">Hasil pemeriksaan</p>
         <h2
           className={`riskBadge riskBadge--${analysis.riskLevel}`}
+          data-stage-heading
           id="analysis-risk-level"
+          tabIndex={-1}
         >
           {riskLabels[analysis.riskLevel]}
         </h2>

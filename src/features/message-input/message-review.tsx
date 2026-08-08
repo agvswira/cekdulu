@@ -45,7 +45,9 @@ export function MessageReview({ initialText, onConfirm }: MessageReviewProps) {
 
   return (
     <section aria-labelledby="message-review-title">
-      <h2 id="message-review-title">Tinjau dan samarkan</h2>
+      <h2 data-stage-heading id="message-review-title" tabIndex={-1}>
+        Tinjau dan samarkan
+      </h2>
       <p>
         Perbaiki hasil baca jika perlu. Hanya teks tersamarkan yang diteruskan
         setelah konfirmasi.
@@ -81,7 +83,7 @@ export function MessageReview({ initialText, onConfirm }: MessageReviewProps) {
         <pre aria-label="Pratinjau teks tersamarkan">{redaction.redactedText}</pre>
 
         {!canConfirm ? <p>Pesan perlu berisi sedikitnya 20 karakter.</p> : null}
-        <button type="submit" disabled={!canConfirm}>
+        <button className="primaryButton" type="submit" disabled={!canConfirm}>
           Konfirmasi dan periksa
         </button>
       </form>

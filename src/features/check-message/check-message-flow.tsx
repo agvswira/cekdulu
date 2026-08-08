@@ -46,6 +46,8 @@ export function CheckMessageFlow({
   const activeRequest = useRef<AbortController | null>(null);
   const requestSequence = useRef(0);
   const isMounted = useRef(true);
+  const stageContainer = useRef<HTMLElement | null>(null);
+  const previousStage = useRef(flow.state.stage);
 
   useEffect(() => {
     isMounted.current = true;
@@ -55,6 +57,20 @@ export function CheckMessageFlow({
       activeRequest.current?.abort();
     };
   }, []);
+
+  useEffect(() => {
+    const stageChanged = previousStage.current !== flow.state.stage;
+    previousStage.current = flow.state.stage;
+    if (!stageChanged) return;
+
+    stageContainer.current
+      ?.querySelector<HTMLElement>("[data-stage-heading]")
+      ?.focus();
+  }, [flow.state.stage]);
+
+  function setStageContainer(node: HTMLElement | null) {
+    stageContainer.current = node;
+  }
 
   async function analyzeRedactedText(redactedText: string) {
     const requestId = ++requestSequence.current;
@@ -154,10 +170,15 @@ export function CheckMessageFlow({
   if (flow.state.stage === "extracting") {
     const progressPercent = Math.round(flow.state.progress * 100);
     return (
-      <section className="checkPanel loadingState" role="status" aria-live="polite">
+      <section
+        className="checkPanel loadingState"
+        ref={setStageContainer}
+        role="status"
+        aria-live="polite"
+      >
         <span className="loadingMark" aria-hidden="true" />
         <p className="sectionKicker">OCR lokal di perangkat</p>
-        <h2>Membaca gambar…</h2>
+        <h2 data-stage-heading tabIndex={-1}>Membaca gambar…</h2>
         <progress
           aria-label="Progres OCR"
           aria-valuenow={progressPercent}
@@ -171,7 +192,7 @@ export function CheckMessageFlow({
 
   if (flow.state.stage === "review") {
     return (
-      <div className="checkPanel">
+      <div className="checkPanel" ref={setStageContainer}>
         <MessageReview
           initialText={flow.state.rawText}
           onConfirm={handleConfirm}
@@ -182,10 +203,15 @@ export function CheckMessageFlow({
 
   if (flow.state.stage === "analyzing") {
     return (
-      <section className="checkPanel loadingState" role="status" aria-live="polite">
+      <section
+        className="checkPanel loadingState"
+        ref={setStageContainer}
+        role="status"
+        aria-live="polite"
+      >
         <span className="loadingMark" aria-hidden="true" />
         <p className="sectionKicker">CekDulu sedang bekerja</p>
-        <h2>Menganalisis pesan…</h2>
+        <h2 data-stage-heading tabIndex={-1}>Menganalisis pesan…</h2>
         <p>Hanya teks yang sudah disamarkan dan dikonfirmasi yang dikirim.</p>
       </section>
     );
@@ -193,7 +219,7 @@ export function CheckMessageFlow({
 
   if (flow.state.stage === "result") {
     return (
-      <div className="checkPanel">
+      <div className="checkPanel" ref={setStageContainer}>
         <AnalysisResultView analysis={flow.state.analysis} />
         <button className="secondaryButton" type="button" onClick={handleReset}>
           Periksa pesan lain
@@ -204,7 +230,7 @@ export function CheckMessageFlow({
 
   if (flow.state.stage === "unavailable") {
     return (
-      <div className="checkPanel">
+      <div className="checkPanel" ref={setStageContainer}>
         <UnavailableState
           message={flow.state.message}
           safetySteps={flow.state.safetySteps}
@@ -218,7 +244,7 @@ export function CheckMessageFlow({
   }
 
   return (
-    <div className="checkPanel">
+    <div className="checkPanel" ref={setStageContainer}>
       {flow.state.error ? <p role="alert">{flow.state.error}</p> : null}
       <MessageIntake
         onReady={handleIntakeReady}

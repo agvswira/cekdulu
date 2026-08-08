@@ -505,3 +505,65 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** Diterima untuk satu final review; raw OCR text tetap di browser state, reducer analyzing hanya menyimpan redacted text, dan body API hanya berisi message yang sudah dikonfirmasi.
 
 **Artefak:** `src/features/check-message/use-check-message-flow.ts` · `src/features/check-message/use-check-message-flow.test.ts` · `src/features/check-message/check-message-flow.tsx` · `src/features/check-message/check-message-flow.test.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-017 · Task 8 · 2026-08-08 18:15 WITA
+
+**Tujuan:** Verifikasi alur browser desktop/mobile, aksesibilitas, responsivitas, dan bukti bahwa hanya teks tersamarkan yang melewati request boundary.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 8 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 8;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 8.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Tiga suite Playwright membuktikan core flow desktop/mobile, request redacted-only yang sepenuhnya di-intercept, empat layar tanpa axe serious/critical, perpindahan fokus, live status, target sentuh 44 px, layout mobile tanpa overflow, dan reduced motion. Focus management dan styling form/responsive ditambahkan; origin Playwright diubah ke `localhost` untuk kompatibilitas Next.js 16.3, dan Vitest mengecualikan `e2e/**` agar runner tidak saling memungut. Sol Advisor tidak digunakan karena risiko dapat diuji langsung; `ui-ux-pro-max` hanya menjadi checklist aksesibilitas yang disaring terhadap approved design.
+
+**Verifikasi:** Baseline `npm test` → 13 file/71 tes lulus. Core E2E mula-mula gagal karena Next.js memblokir resource dev lintas-origin; setelah origin diselaraskan → 2/2 lulus. Privacy E2E → 2/2 lulus. Accessibility RED → 7 gagal/1 skip, lalu setelah focus, target, responsive, dan reduced-motion fixes → 7 lulus/1 skip; target mobile juga stabil 5/5 pengulangan. Full `npm run test:e2e` → 11 lulus/1 intentional desktop skip. `npm test` awal setelah E2E menemukan runner overlap meski 71 unit test lulus; setelah exclusion config → 13 file/71 tes lulus. Fresh `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Public deployment Task 4 tetap **pending** dan tidak dianggap lulus.
+
+**Keputusan:** Diterima untuk satu final review; perubahan teknis tambahan terbatas pada focus container dan pemisahan konfigurasi runner, tanpa mengubah scope, design, privacy, atau safety.
+
+**Artefak:** `e2e/*` · `src/app/globals.css` · `src/features/check-message/*` · `src/features/message-input/*` · `playwright.config.ts` · `vitest.config.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-018 · Task 8 · 2026-08-08 18:23 WITA
+
+**Tujuan:** Koreksi P-017 berdasarkan satu final review agar initial focus tetap natural dan bukti mobile mencakup ukuran teks serta seluruh link/control produk.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 8 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 8;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 8.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Satu final review menemukan dua Important dan satu Minor: initial mount memindahkan fokus melewati konten pengantar, beberapa auxiliary text mobile tetap di bawah 16 px, dan bukti target 44 px melewatkan brand/result links. Fokus kini hanya berpindah ketika stage benar-benar berubah; mobile typography dinaikkan menjadi 16 px; brand mendapat hit area 44 px; assertion mencakup link dan control produk pada intake, review, dan result. Tidak dilakukan review kedua.
+
+**Verifikasi:** RED accessibility run → initial `body` focus gagal di desktop/mobile dan privacy cue terukur 14.4 px; RED focused touch-target run → brand link terukur 36 px. Setelah koreksi → focused accessibility 7 lulus/1 intentional desktop skip. Full final verification dijalankan setelah entry ini. Public deployment Task 4 tetap **pending**.
+
+**Keputusan:** P-017 dikoreksi secara append-only; semua findings diterima setelah diverifikasi terhadap DOM/CSS aktual dan diperbaiki tanpa perubahan scope, design, privacy, atau safety.
+
+**Artefak:** `e2e/accessibility.spec.ts` · `src/app/globals.css` · `src/features/check-message/check-message-flow.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.

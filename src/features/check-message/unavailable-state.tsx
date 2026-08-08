@@ -8,7 +8,9 @@ export function UnavailableState({ message, safetySteps, onRetry }: UnavailableS
   return (
     <section className="unavailableState" aria-labelledby="unavailable-heading">
       <p className="sectionKicker">Panduan aman sementara</p>
-      <h2 id="unavailable-heading">Analisis belum tersedia</h2>
+      <h2 data-stage-heading id="unavailable-heading" tabIndex={-1}>
+        Analisis belum tersedia
+      </h2>
       <p>{message}</p>
       <ul className="safetyStepList">
         {safetySteps.map((step) => <li key={step}>{step}</li>)}
