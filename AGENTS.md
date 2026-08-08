@@ -69,4 +69,3 @@ If documents disagree within the same domain, stop and report the exact conflict
 - Never add secrets to Git.
 - Before committing, inspect the diff and run checks appropriate to the files changed.
 - Product implementation remains paused until the setup gate is explicitly released.
-
