@@ -55,7 +55,30 @@ If documents disagree within the same domain, stop and report the exact conflict
 - Logging begins with implementation Task 1 after the setup gate is explicitly released.
 - Do not create retrospective entries for kickoff, brainstorming, design, planning, or repository setup.
 - Append one compact entry for each meaningful implementation decision before the related task commit.
-- Follow the format in `docs/ai/PROMPT_LOG.md`.
+- Use this compact entry format:
+
+  ```md
+  ## P-001 · Task 1 · YYYY-MM-DD HH:MM WITA
+
+  **Tujuan:** Satu kalimat yang menjelaskan hasil yang ingin dicapai.
+
+  **Tool/model:** Cantumkan hanya jika diketahui secara langsung.
+
+  <details>
+  <summary>Prompt lengkap</summary>
+
+  Prompt asli tanpa perubahan.
+
+  </details>
+
+  **Hasil:** Ringkasan satu sampai tiga pernyataan singkat.
+
+  **Verifikasi:** Perintah atau pemeriksaan → hasil yang benar-benar diamati.
+
+  **Keputusan:** Diterima, direvisi, atau ditolak beserta alasan singkat.
+
+  **Artefak:** `path/file` · commit `hash` setelah commit tersedia.
+  ```
 - Do not record a team member, author, operator, or task owner.
 - Record tool/model only when directly exposed by the active environment/session or explicitly supplied by the user. Omit the field when unknown; never infer it.
 - Preserve the full prompt inside a collapsed block, keep summaries concise, and record the verification result and decision.
