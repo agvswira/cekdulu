@@ -474,3 +474,34 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** P-014 dikoreksi secara append-only; kedua findings diterima setelah reproduksi aktual dan diperbaiki tanpa mengubah scope, design, privacy, atau safety.
 
 **Artefak:** `src/features/message-input/message-intake.tsx` · `src/features/message-input/message-intake.test.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-016 · Task 7 · 2026-08-08 17:49 WITA
+
+**Tujuan:** Integrasikan intake, OCR lokal, review redaksi, request analisis, fallback, retry, reset, dan sample ke state machine eksplisit yang menjaga privacy boundary.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 7 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 7;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap lulus.
+
+Jika verification lulus dan review clean, commit Task 7.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Reducer enam tahap dan command transitions, alur screenshot/paste/sample, OCR recovery, result/fallback, retry/reset, request redacted-only, serta timeout AbortController 15 detik ditambahkan. Wrapper OCR menggerakkan progress tanpa menyimpan `File` di reducer; `page.tsx` tidak diubah karena sudah merender `CheckMessageFlow` sejak Task 4. Import test `waitFor` yang tidak lagi dipakai dihapus setelah lint warning tanpa perubahan behavior. Sol Advisor tidak digunakan karena reducer dan kontrak request sudah ditetapkan rinci oleh plan; `ui-ux-pro-max` hanya memberi panduan loading, alert, dan recovery yang disaring terhadap approved design.
+
+**Verifikasi:** Baseline `npm test` → 12 file/64 tes lulus; RED hook → gagal karena modul belum ada lalu GREEN 4/4; RED integrated flow → 4 dari 6 tes gagal pada upload, paste, OCR recovery, dan timeout lalu GREEN 6/6; focused `npm test -- src/features/check-message` → 2 file/10 tes lulus. Typecheck lulus; lint awal menemukan satu unused import test-only lalu setelah koreksi focused 10/10 dan lint bersih. Fresh `npm test` → 13 file/71 tes lulus; `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Public deployment Task 4 tetap **pending** dan tidak dianggap lulus.
+
+**Keputusan:** Diterima untuk satu final review; raw OCR text tetap di browser state, reducer analyzing hanya menyimpan redacted text, dan body API hanya berisi message yang sudah dikonfirmasi.
+
+**Artefak:** `src/features/check-message/use-check-message-flow.ts` · `src/features/check-message/use-check-message-flow.test.ts` · `src/features/check-message/check-message-flow.tsx` · `src/features/check-message/check-message-flow.test.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
