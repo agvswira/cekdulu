@@ -248,7 +248,7 @@ describe("BrandHeader", () => {
 
 - [ ] **Step 4: Run the test and confirm the missing component failure**
 
-Run: `npm test -- src/components/brand-header.test.tsx`  
+Run: `npm test -- src/components/brand-header.test.tsx`
 Expected: FAIL because `./brand-header` does not exist.
 
 - [ ] **Step 5: Implement the shell and design tokens**
@@ -377,7 +377,7 @@ Move the shared `validResult` to `src/domain/analysis/test-fixtures.ts` so later
 
 - [ ] **Step 2: Run tests and confirm missing-module failures**
 
-Run: `npm test -- src/domain/analysis`  
+Run: `npm test -- src/domain/analysis`
 Expected: FAIL because the schema and safety modules do not exist.
 
 - [ ] **Step 3: Implement the Zod contract**
@@ -499,7 +499,7 @@ expect(model.generate).toHaveBeenCalledTimes(2);
 
 - [ ] **Step 2: Run tests and confirm missing-module failures**
 
-Run: `npm test -- src/server/analysis`  
+Run: `npm test -- src/server/analysis`
 Expected: FAIL because the server modules do not exist.
 
 - [ ] **Step 3: Implement the fixed Indonesian prompt**
@@ -720,7 +720,7 @@ Render `CheckMessageFlow`, click `Coba contoh pesan`, mock `fetch` with `{ statu
 
 - [ ] **Step 3: Run the test and confirm failure**
 
-Run: `npm test -- src/features/check-message/check-message-flow.test.tsx`  
+Run: `npm test -- src/features/check-message/check-message-flow.test.tsx`
 Expected: FAIL because the feature components do not exist.
 
 - [ ] **Step 4: Implement Feature Zero**
@@ -787,7 +787,7 @@ Also test repeated values receive stable numbered tokens, overlapping URL/email/
 
 - [ ] **Step 2: Run tests and confirm failure**
 
-Run: `npm test -- src/features/message-input/redaction.test.ts`  
+Run: `npm test -- src/features/message-input/redaction.test.ts`
 Expected: FAIL because the module does not exist.
 
 - [ ] **Step 3: Implement ordered, non-overlapping redaction**
@@ -986,7 +986,7 @@ Assert `reset` clears all raw, redacted, and result state.
 
 - [ ] **Step 2: Run the hook test and confirm failure**
 
-Run: `npm test -- src/features/check-message/use-check-message-flow.test.ts`  
+Run: `npm test -- src/features/check-message/use-check-message-flow.test.ts`
 Expected: FAIL because the hook does not exist.
 
 - [ ] **Step 3: Implement the explicit reducer-backed hook**
