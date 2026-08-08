@@ -197,3 +197,32 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** P-005 dikoreksi secara append-only; dua issue Important dari final review diterima untuk diperbaiki sebelum verification dan commit.
 
 **Artefak:** `src/app/globals.css` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-007 · Task 2 · 2026-08-08 15:59 WITA
+
+**Tujuan:** Definisikan analysis contract yang versioned serta tolak evidence buatan dan absolute verdict sebelum dipakai server, UI, atau evaluator.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 2 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers, tetapi prioritaskan workflow yang efisien:
+- kerjakan hanya scope Task 2;
+- TDD dan verification yang relevan;
+- satu final review saja;
+- jangan gunakan Sol Advisor kecuali task memang kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, atau privacy boleh dilakukan langsung dan dicatat.
+
+Jika verification lulus dan review clean, commit Task 2.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Zod request/result schemas, provider JSON schema, shared valid fixture, evidence containment, dan prohibited-verdict scan ditambahkan. Tests juga mencakup request boundaries, normalization, dan seluruh generated-text fields; fixture indexing memakai non-null assertions agar sesuai `noUncheckedIndexedAccess` tanpa mengubah behavior.
+
+**Verifikasi:** Baseline `npm test` → 1 test lulus; RED `npm test -- src/domain/analysis` → gagal karena `schema.ts` dan `safety.ts` belum ada; schema GREEN → 5 tests lulus; safety GREEN → 10 tests lulus; combined domain run → 15 tests lulus; typecheck awal → menemukan optional fixture indexing, setelah koreksi `npm test -- src/domain/analysis/safety.test.ts` → 10 tests lulus dan `npm run typecheck` → exit 0.
+
+**Keputusan:** Diterima. Sol Advisor tidak digunakan karena kontrak bounded dan implementation plan sudah menetapkan interface serta behavior secara lengkap; satu final review dijalankan setelah final verification.
+
+**Artefak:** `src/domain/analysis/*` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
