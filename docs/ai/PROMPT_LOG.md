@@ -695,3 +695,102 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** P-021 dikoreksi secara append-only; seluruh findings diterima setelah diverifikasi dan diperbaiki tanpa perubahan scope, design, privacy, safety, atau evaluation integrity.
 
 **Artefak:** `README.md` · `docs/DEMO.md` · `docs/PRIVACY.md` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-023 · Task 10 deployment verification · 2026-08-08 19:25 WITA
+
+**Tujuan:** Deploy release branch ke Vercel dan verifikasi flow publik dengan Gemini aktual, fallback, privacy boundary, serta smoke test desktop/mobile.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke public deployment dan fresh-browser verification CekDulu sesuai implementation plan.
+
+Fokus hanya pada deployment readiness:
+- gunakan credential/runtime Vercel dan Gemini yang tersedia;
+- jangan simpan secret ke repository atau PROMPT_LOG;
+- deploy branch saat ini;
+- verifikasi URL publik di fresh browser;
+- verifikasi Feature Zero dengan Gemini aktual;
+- verifikasi fallback/error path;
+- pastikan privacy boundary tetap terjaga;
+- jalankan smoke test desktop dan mobile.
+
+Catat hasil aktual di PROMPT_LOG.
+
+Jika ada blocker credential/deployment, STOP dan laporkan.
+Jika semuanya lulus, jangan merge ke main dulu; laporkan URL deployment dan hasil verification.
+
+</details>
+
+**Hasil:** Branch/worktree bersih pada release commit Task 10 dan sesi Vercel aktif, tetapi project `cekdulu` belum tersedia serta `GEMINI_API_KEY` tidak tersedia pada runtime atau file environment checkout yang dapat digunakan. Proses dihentikan sebelum membuat project, mengatur environment, atau deploy; karena itu belum ada public URL maupun fresh-browser, Gemini aktual, fallback, privacy, desktop, atau mobile verification.
+
+**Verifikasi:** Linked worktree `task-1-calm-guardian-shell` pada commit `bf8695cb4b0ea14f8ad36e7411c3d2b768891e92` → bersih. Vercel CLI session check → exit 0. Vercel project listing → project `cekdulu` tidak ditemukan. Pemeriksaan presence-only pada runtime/worktree/checkout environment → `GEMINI_API_KEY` tidak tersedia; tidak ada nilai credential yang dibaca, dicetak, atau dicatat.
+
+**Keputusan:** Diblokir dan dihentikan sesuai instruksi pengguna; public deployment Task 4 tetap **pending** dan tidak dianggap lulus.
+
+**Artefak:** `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-024 · Task 10 public deployment verification · 2026-08-08 20:43 WITA
+
+**Tujuan:** Deploy release branch ke production dan verifikasi Feature Zero publik, Gemini aktual, fallback, privacy boundary, serta desktop/mobile smoke.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+GEMINI_API_KEY sudah dikonfigurasi secara aman di Vercel untuk Preview dan Production.
+
+Lanjutkan deployment dan fresh-browser verification sesuai implementation plan.
+
+Jangan membaca atau mencetak nilai secret.
+Deploy dari worktree saat ini, verifikasi Feature Zero dengan Gemini aktual, fallback path, privacy boundary, serta smoke test desktop/mobile.
+
+Catat hasil aktual di PROMPT_LOG.
+
+Jika semuanya lulus, jangan merge atau push dulu.
+Laporkan URL publik dan hasil verification.
+
+</details>
+
+**Hasil:** Production deployment tersedia di `https://cekdulu-gamma.vercel.app` dari commit `bf8695cb4b0ea14f8ad36e7411c3d2b768891e92`. Deployment pertama gagal setelah successful Next.js build karena project baru memakai preset Other/output `public`; project setting diperbaiki eksternal menjadi Next.js dengan output auto-detect, lalu deployment kedua READY. Built-in sample, paste flow, redacted-only request, real Gemini result, official IASC link, reset, classification-free timeout fallback, dan mobile result smoke lulus. Screenshot upload tidak mencapai review karena production CSP `script-src 'self'` memblokir Tesseract worker yang mengimpor `https://cdn.jsdelivr.net/npm/tesseract.js@v7.0.0/dist/worker.min.js`; keseluruhan fresh-browser acceptance karena itu **belum lulus**. Percobaan fresh desktop pertama juga tidak menerima API response event dalam 30 detik, sedangkan direct API dan subsequent warm browser runs lulus; cold-start behavior tetap perlu diperhatikan.
+
+**Verifikasi:** Fresh `npm test` → 15 file/85 tes lulus. Public homepage → HTTP 200. Direct synthetic `/api/analyze` → HTTP 200, `status: ok`, sekitar 10 detik. Fresh desktop built-in sample setelah warm-up → HTTP 200, `status: ok`, `Risiko tinggi`, `Cache-Control: no-store`, 6,6 detik. Fresh desktop paste → hanya `{ message: redactedText }`, raw phone/URL tidak ada, token redaksi ada, grounded evidence, Gemini HTTP 200, official link/reset lulus, 7,0 detik. Intercepted 15-second timeout → `Analisis belum tersedia`, tiga safety steps, Retry, focus managed, tanpa risk heading. Fresh mobile 390×844 → Gemini HTTP 200, tanpa horizontal overflow, visible touch targets minimal 44 px, dan small text minimal 16 px. Fresh screenshot OCR → gagal setelah 120 detik; diagnostic run menghasilkan `importScripts` worker load error yang konsisten dengan CSP response. `GEMINI_API_KEY` tidak dibaca atau dicetak dan `.env.local` tidak dibuat.
+
+**Keputusan:** Direvisi/ditahan; public deployment berhasil, tetapi Step 6 dan public Feature Zero verification tidak boleh dinyatakan lulus sampai OCR worker dapat berjalan di bawah production CSP dan fresh-browser screenshot path diverifikasi ulang. Tidak dilakukan push atau merge.
+
+**Artefak:** `docs/ai/PROMPT_LOG.md` · deployment `https://cekdulu-gamma.vercel.app` · commit belum dibuat.
+
+## P-025 · Task 10 production OCR fix · 2026-08-08 21:03 WITA
+
+**Tujuan:** Hilangkan blocker CSP production dengan menyajikan seluruh runtime asset Tesseract dari origin CekDulu tanpa mengubah UX, API, atau privacy boundary.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Ya, saya menyetujui desain build-time self-host tersebut.
+
+Implementasikan sesuai desain yang sudah dipaparkan:
+- pin dependency language data yang diperlukan;
+- copy worker, core/WASM, dan eng/ind traineddata ke `public/tesseract/` saat build;
+- gunakan hanya path origin-local pada `createWorker`;
+- pertahankan CSP tetap ketat;
+- jangan ubah UX, API contract, atau privacy boundary;
+- screenshot/raw OCR data tetap tidak boleh dikirim ke server.
+
+Tambahkan regression test untuk memastikan:
+- tidak ada external Tesseract asset path;
+- seluruh asset wajib tersedia setelah build.
+
+Setelah itu jalankan verification lengkap, satu final review, deploy ulang production, dan ulang fresh-browser OCR/privacy verification.
+
+Jika semuanya lulus, commit perbaikannya.
+Jangan merge atau push ke main dulu.
+
+</details>
+
+**Hasil:** Tesseract.js/core dan language data `eng`/`ind` dipin; `predev`/`prebuild` sekarang menyalin worker, tiga LSTM core loader/WASM pairs, dua traineddata, dan license notices ke generated `public/tesseract/`. OCR adapter hanya memakai `/tesseract/worker.min.js`, `/tesseract/core`, dan `/tesseract/lang` dengan blob worker dinonaktifkan. CSP, UX, API contract, dan data flow tidak berubah. Satu final review menemukan missing worker/core license notices; finding diperbaiki melalui RED→GREEN tanpa review kedua. Production redeploy READY dan alias tetap `https://cekdulu-gamma.vercel.app`.
+
+**Verifikasi:** Initial focused RED → adapter path mismatch dan missing preparation command; focused GREEN → 2 file/4 tes lulus. Review-finding RED → missing `worker.min.js.LICENSE.txt`; setelah license sync → focused 4/4 lulus. Fresh full gate setelah review fix: `npm test` → 16 file/86 tes lulus; `npm run typecheck`, `npm run lint`, dan `npm run build` → exit 0. Build menjalankan `prepare:tesseract`; seluruh sembilan runtime assets dan tiga license/notice files non-empty. `next.config.ts` hash sama dengan HEAD dan public CSP tetap tidak mengizinkan CDN Tesseract. Public assets yang diperiksa → HTTP 200. Fresh production screenshot → OCR review 6,9 detik, worker/core/eng/ind request hanya ke CekDulu origin, tanpa external asset request atau CSP/page/console error. Sebelum konfirmasi → nol `/api/analyze` request; setelah koreksi dan konfirmasi → satu JSON request berisi hanya confirmed redacted message, raw phone/URL tidak ada, lalu Gemini aktual HTTP 200/`status: ok` menampilkan `Risiko tinggi` dalam 8,9 detik. `.env.local` tidak dibuat dan secret tidak dibaca atau dicetak.
+
+**Keputusan:** Diterima; production OCR blocker teratasi dan Step 6 fresh-browser screenshot/privacy verification lulus tanpa melonggarkan CSP atau mengubah privacy boundary.
+
+**Artefak:** `.gitignore` · `package.json` · `package-lock.json` · `scripts/sync-tesseract-assets.mjs` · `scripts/sync-tesseract-assets.test.ts` · `src/features/message-input/ocr.ts` · `src/features/message-input/ocr.test.ts` · `docs/superpowers/plans/2026-08-08-tesseract-origin-assets.md` · `docs/ai/PROMPT_LOG.md` · deployment `https://cekdulu-gamma.vercel.app` · commit belum dibuat.

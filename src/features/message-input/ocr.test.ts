@@ -21,7 +21,13 @@ describe("recognizeMessageImage", () => {
     const worker = workerWith(recognize as unknown as Worker["recognize"], terminate);
     let logger: ((message: LoggerMessage) => void) | undefined;
     const workerFactory = vi.fn(
-      async (...args: [string[], OEM, { logger: (message: LoggerMessage) => void }]) => {
+      async (...args: [string[], OEM, {
+        corePath: string;
+        langPath: string;
+        logger: (message: LoggerMessage) => void;
+        workerBlobURL: boolean;
+        workerPath: string;
+      }]) => {
         logger = args[2].logger;
         return worker;
       },
@@ -35,7 +41,11 @@ describe("recognizeMessageImage", () => {
 
     await expect(resultPromise).resolves.toBe("Pesan hasil OCR");
     expect(workerFactory).toHaveBeenCalledWith(["ind", "eng"], OEM.LSTM_ONLY, {
+      corePath: "/tesseract/core",
+      langPath: "/tesseract/lang",
       logger: expect.any(Function),
+      workerBlobURL: false,
+      workerPath: "/tesseract/worker.min.js",
     });
     expect(recognize).toHaveBeenCalledWith(image);
     expect(onProgress).toHaveBeenCalledTimes(1);

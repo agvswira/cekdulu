@@ -3,7 +3,13 @@ import { createWorker, OEM, type LoggerMessage, type Worker } from "tesseract.js
 type WorkerFactory = (
   languages: string[],
   oem: OEM,
-  options: { logger: (message: LoggerMessage) => void },
+  options: {
+    corePath: string;
+    langPath: string;
+    logger: (message: LoggerMessage) => void;
+    workerBlobURL: boolean;
+    workerPath: string;
+  },
 ) => Promise<Worker>;
 
 export async function recognizeMessageImage(
@@ -12,11 +18,15 @@ export async function recognizeMessageImage(
   workerFactory: WorkerFactory = createWorker,
 ) {
   const worker = await workerFactory(["ind", "eng"], OEM.LSTM_ONLY, {
+    corePath: "/tesseract/core",
+    langPath: "/tesseract/lang",
     logger: (message) => {
       if (message.status === "recognizing text" && typeof message.progress === "number") {
         onProgress(message.progress);
       }
     },
+    workerBlobURL: false,
+    workerPath: "/tesseract/worker.min.js",
   });
 
   try {

@@ -12,3 +12,4 @@ evaluation/holdout.private.json
 *.tsbuildinfo
 dist/
 .DS_Store
+/public/tesseract/
