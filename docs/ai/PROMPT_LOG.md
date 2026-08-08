@@ -350,3 +350,65 @@ Jangan push atau merge ke main dulu.
 **Keputusan:** P-010 dikoreksi secara append-only; Minor review diterima sebagai penyesuaian teknis kecil tanpa perubahan scope, design, privacy, atau safety. Tidak dilakukan review kedua.
 
 **Artefak:** `src/features/check-message/analysis-result-view.tsx` · `src/features/check-message/check-message-flow.test.tsx` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-012 · Task 5 · 2026-08-08 17:13 WITA
+
+**Tujuan:** Redact phone, email, URL, dan account-like values secara deterministik di browser tanpa redaksi ganda atau perubahan tanggal biasa.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 5 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 5;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap selesai sampai benar-benar diverifikasi.
+
+Jika verification lulus dan review clean, commit Task 5.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Typed redaction result, precedence URL→email→phone→account, non-overlapping spans, dan stable per-kind numbering ditambahkan. Phone regex mengizinkan satu separator setelah `+62|62` agar fixture wajib `+62 812...` terdeteksi sebagai phone, bukan account; perubahan ini tidak memperluas scope atau mengubah privacy/safety.
+
+**Verifikasi:** Baseline `npm test` → 7 file/32 tes lulus; RED focused test → gagal karena `redaction.ts` belum ada; GREEN awal → 7 dari 8 tes lulus dan fixture `+62 812...` gagal akibat separator country code; reproduksi regex mengonfirmasi phone tidak match dan account match; setelah koreksi minimum → 8/8 lulus. Defense tests untuk parentheses, punctuation terminal URL, account berspasi, all-kinds containment, overlap, numbering, dan tanggal → focused 12/12 lulus; `npm run typecheck`, `npm run lint`, dan `git diff --check` → exit 0. Public deployment Task 4 tetap **pending** dan tidak termasuk verification Task 5.
+
+**Keputusan:** Diterima untuk final verification dan satu final review. Sol Advisor tidak digunakan karena algoritme dan interface bounded oleh plan serta dilindungi unit tests deterministik.
+
+**Artefak:** `src/features/message-input/redaction.ts` · `src/features/message-input/redaction.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-013 · Task 5 · 2026-08-08 17:21 WITA
+
+**Tujuan:** Koreksi P-012 dengan hasil final review dan tutup celah partial redaction pada account-like values.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Lanjutkan ke Implementation Task 5 sesuai implementation plan.
+
+Ikuti `AGENTS.md` dan Superpowers secara efisien:
+- kerjakan hanya scope Task 5;
+- gunakan TDD dan verification yang relevan;
+- satu final review saja;
+- gunakan Sol Advisor hanya jika task benar-benar kompleks/high-risk;
+- penyesuaian teknis kecil yang tidak mengubah scope, design, privacy, atau safety boleh dilakukan langsung dan dicatat.
+
+Public deployment Task 4 tetap pending dan jangan dianggap selesai sampai benar-benar diverifikasi.
+
+Jika verification lulus dan review clean, commit Task 5.
+Jangan push atau merge ke main dulu.
+
+</details>
+
+**Hasil:** Satu final review menemukan satu Important dan dua Minor: phone match parsial dapat menyisakan digit account mentah, account match menyerap separator terminal, dan URL menyerap closing delimiter. Phone/account end boundaries diperketat dan URL terminal punctuation diperluas; tidak ada review kedua.
+
+**Verifikasi:** Reproduksi aktual mengamati `[PHONE_1] 1234`, `[ACCOUNT_1]sekarang`, dan URL span yang menyerap `)`. RED regression run → 4 dari 16 tes gagal untuk dua account prefix, separator account, dan parenthesized URL; setelah koreksi boundary → focused 16/16 lulus. Full final verification dijalankan setelah entry ini. Public deployment Task 4 tetap **pending**.
+
+**Keputusan:** P-012 dikoreksi secara append-only; semua findings final review diterima dan diperbaiki melalui TDD tanpa perubahan scope, design, privacy, atau safety.
+
+**Artefak:** `src/features/message-input/redaction.ts` · `src/features/message-input/redaction.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
