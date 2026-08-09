@@ -3,9 +3,18 @@ import { describe, expect, it } from "vitest";
 import { BrandHeader } from "./brand-header";
 
 describe("BrandHeader", () => {
-  it("shows the approved brand and privacy cue", () => {
+  it("uses the official horizontal logo for the home link", () => {
     render(<BrandHeader />);
-    expect(screen.getByText("CekDulu")).toBeInTheDocument();
+
+    const homeLink = screen.getByRole("link", { name: "CekDulu — beranda" });
+    const logo = homeLink.querySelector("img");
+
+    expect(homeLink).toHaveAttribute("href", "/");
+    expect(logo).toHaveAttribute("src", "/brand/logo.svg");
+    expect(logo).toHaveAttribute("alt", "");
+    expect(logo).toHaveAttribute("width", "400");
+    expect(logo).toHaveAttribute("height", "99");
+    expect(screen.queryByText("✓")).not.toBeInTheDocument();
     expect(screen.getByText("Diproses secara privat")).toBeInTheDocument();
   });
 });

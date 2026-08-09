@@ -82,17 +82,11 @@ button:focus-visible {
   text-decoration: none;
 }
 
-.brandMark {
-  display: grid;
-  width: 2.25rem;
+.brandLogo {
+  display: block;
+  width: auto;
   height: 2.25rem;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--trust);
-  color: var(--surface);
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  font-size: 1.1rem;
-  line-height: 1;
+  object-fit: contain;
 }
 
 .privacyCue {

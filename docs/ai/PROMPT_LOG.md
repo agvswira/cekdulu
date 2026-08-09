@@ -1086,3 +1086,43 @@ Jika gagal, STOP dan laporkan evidence sebelum mengubah source.
 **Keputusan:** Diterima untuk production success dan fallback verification; lanjut ke final local gate, commit, fast-forward main, dan push tanpa force.
 
 **Artefak:** `docs/ai/PROMPT_LOG.md` · deployment `https://cekdulu-gamma.vercel.app` · commit belum dibuat.
+
+## P-034 · Brand asset replacement · 2026-08-09 19:53 WITA
+
+**Tujuan:** Ganti branding visual header dan metadata icon dengan asset resmi tanpa mengubah layout, copy, theme, UX, atau state logic.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Ya, saya menyetujui desain tersebut dan pengerjaan in-place pada checkout saat ini.
+
+Lanjutkan dengan batas berikut:
+- gunakan `next/image` untuk `public/brand/logo.svg`;
+- pertahankan tinggi visual sekitar `2.25rem`;
+- lebar mengikuti aspect ratio asli, tanpa distorsi;
+- pertahankan `aria-label="CekDulu — beranda"` dan gunakan `alt=""` pada image;
+- hapus simbol `✓`, teks brand manual, dan CSS `.brandMark`;
+- jangan gunakan `logo-mark.svg` jika memang tidak dibutuhkan di UI;
+- biarkan `favicon.ico`, `icon.png`, dan `apple-icon.png` memakai file convention Next.js tanpa metadata manual;
+- jangan ubah layout/header behavior lain, warna, copy, UX, atau state logic.
+
+Gunakan regression test test-first.
+Verifikasi:
+- header desktop/mobile;
+- favicon;
+- app icon/apple icon terdeteksi pada build;
+- typecheck, lint, build, git diff --check.
+
+Pastikan kelima asset baru ikut sebagai perubahan yang memang disengaja.
+Jangan commit atau push dulu.
+Tampilkan ringkasan diff dan hasil verification.
+
+</details>
+
+**Hasil:** Header memakai horizontal logo resmi melalui `next/image` dengan intrinsic size `400×99`, tinggi visual 36 px, `alt=""`, dan accessible link name tetap sama. Simbol/text brand manual dan `.brandMark` dihapus; `logo-mark.svg` disertakan sebagai asset resmi tetapi tidak dirender. Favicon 48/32/16, app icon 512, dan Apple icon 180 tetap memakai file convention Next.js tanpa metadata manual.
+
+**Verifikasi:** TDD RED → test gagal karena header belum memiliki image resmi; GREEN → focused test lulus. `npm test` 19 file/117 tes, `npm run typecheck`, dan `npm run build` → lulus; build mendeteksi `/icon.png` dan `/apple-icon.png`. Fresh production-build browser desktop 1440×900 dan mobile 390×844 → logo 145.453×36 px, ratio 4.04036 sama dengan 400:99, tanpa horizontal overflow. Metadata head memuat favicon 48×48, icon 512×512, dan apple-touch-icon 180×180; seluruh asset merespons HTTP 200 dengan content type yang sesuai. Full `npm run lint` terhalang generated `.next` di worktree lama; source lint dengan `--ignore-pattern '.worktrees/**'` lulus. `git diff --check` dijalankan pada final gate.
+
+**Keputusan:** Diterima untuk review pre-commit; tidak ada metadata manual, redesign, perubahan copy, theme, UX, atau state logic.
+
+**Artefak:** `public/brand/logo.svg` · `public/brand/logo-mark.svg` · `src/app/favicon.ico` · `src/app/icon.png` · `src/app/apple-icon.png` · `src/components/brand-header.tsx` · `src/components/brand-header.test.tsx` · `src/app/globals.css` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
