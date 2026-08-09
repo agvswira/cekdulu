@@ -20,3 +20,41 @@ test("built-in sample renders the complete structured result", async ({ page }) 
     page.getByText("CekDulu tidak dapat memastikan identitas pengirim."),
   ).toBeVisible();
 });
+
+test("analysis spinner is centered 20px above its label", async ({ page }) => {
+  await page.route("**/api/analyze", async () => {
+    await new Promise(() => undefined);
+  });
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "Coba contoh pesan" }).click();
+
+  const heading = page.getByRole("heading", { name: "Menganalisis pesan…" });
+  await expect(heading).toBeVisible();
+
+  const geometry = await page.getByRole("status").evaluate((card) => {
+    const spinner = card.querySelector<HTMLElement>(".loadingMark");
+    const label = Array.from(card.querySelectorAll<HTMLElement>("p")).find(
+      (element) => element.textContent === "CekDulu sedang bekerja",
+    );
+
+    if (!spinner || !label) {
+      throw new Error("Analysis loading geometry elements were not found");
+    }
+
+    const cardRect = card.getBoundingClientRect();
+    const spinnerRect = spinner.getBoundingClientRect();
+
+    return {
+      hasAnalysisModifier: card.classList.contains("loadingState--analysis"),
+      centerDelta:
+        spinnerRect.left + spinnerRect.width / 2 -
+        (cardRect.left + cardRect.width / 2),
+      gap: label.offsetTop - (spinner.offsetTop + spinner.offsetHeight),
+    };
+  });
+
+  expect(geometry.hasAnalysisModifier).toBe(true);
+  expect(Math.abs(geometry.centerDelta)).toBeLessThanOrEqual(1);
+  expect(geometry.gap).toBeCloseTo(20, 0);
+});

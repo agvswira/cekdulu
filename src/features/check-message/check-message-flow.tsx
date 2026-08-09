@@ -204,7 +204,7 @@ export function CheckMessageFlow({
   if (flow.state.stage === "analyzing") {
     return (
       <section
-        className="checkPanel loadingState"
+        className="checkPanel loadingState loadingState--analysis"
         ref={setStageContainer}
         role="status"
         aria-live="polite"

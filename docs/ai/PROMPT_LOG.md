@@ -759,6 +759,36 @@ Laporkan URL publik dan hasil verification.
 
 **Artefak:** `docs/ai/PROMPT_LOG.md` · deployment `https://cekdulu-gamma.vercel.app` · commit belum dibuat.
 
+## P-033 · Analysis loading spinner geometry · 2026-08-09 14:43 WITA
+
+**Tujuan:** Pusatkan spinner pada analysis loading card dengan jarak 20 px ke label tanpa memengaruhi OCR loading atau state lain.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Ya, lanjutkan dengan desain scoped tersebut.
+
+Implementasikan hanya pada analysis loading card:
+- modifier class khusus analysis loading;
+- spinner center horizontal dengan margin-inline: auto;
+- jarak 20 px ke label;
+- jangan ubah OCR loading atau state lain;
+- jangan ubah ukuran, animasi, warna, copy, focus behavior, atau state logic;
+- tidak perlu breakpoint baru.
+
+Verifikasi geometry desktop dan mobile.
+Jika bersih, commit perubahan ini saja.
+
+</details>
+
+**Hasil:** Analysis loading card mendapat modifier khusus yang memusatkan spinner dengan `margin-inline: auto` dan menetapkan jarak 20 px ke label. OCR loading, state lain, serta ukuran, animasi, warna, copy, focus behavior, dan state logic tetap sama.
+
+**Verifikasi:** TDD RED → regresi geometri gagal pada desktop dan mobile karena modifier analysis belum ada. Focused GREEN → 2/2 proyek Playwright lulus dengan center delta maksimal 1 px dan gap 20 px. Full gate → `npm test` 19 file/117 tes lulus; `npm run typecheck`, `npm run lint`, dan `npm run build` exit 0; `npm run test:e2e` 13 lulus/1 skip termasuk geometri desktop dan mobile; `git diff --check` bersih.
+
+**Keputusan:** Diterima setelah review final memastikan modifier dan CSS hanya berlaku pada analysis loading card.
+
+**Artefak:** `src/features/check-message/check-message-flow.tsx` · `src/app/globals.css` · `e2e/core-flow.spec.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
 ## P-025 · Task 10 production OCR fix · 2026-08-08 21:03 WITA
 
 **Tujuan:** Hilangkan blocker CSP production dengan menyajikan seluruh runtime asset Tesseract dari origin CekDulu tanpa mengubah UX, API, atau privacy boundary.

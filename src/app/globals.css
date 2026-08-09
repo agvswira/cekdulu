@@ -451,6 +451,11 @@ h1 {
   animation: loading-spin 900ms linear infinite;
 }
 
+.loadingState--analysis .loadingMark {
+  margin-inline: auto;
+  margin-bottom: 20px;
+}
+
 @keyframes loading-spin {
   to { transform: rotate(360deg); }
 }
