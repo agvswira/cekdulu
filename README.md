@@ -2,9 +2,9 @@
 
 **Sebelum klik atau transfer, CekDulu.**
 
-CekDulu bertujuan membantu pengguna memahami dalam kurang dari 60 detik mengapa sebuah pesan mungkin berisiko dan apa yang sebaiknya diverifikasi sebelum membuka tautan, membagikan data, atau mentransfer uang. CekDulu adalah asisten pemeriksa risiko, bukan penentu bahwa pesan pasti aman atau pasti penipuan. Target waktu tersebut tetap perlu dibuktikan pada public deployment.
+CekDulu membantu pengguna memahami mengapa sebuah pesan mungkin berisiko dan apa yang sebaiknya diverifikasi sebelum membuka tautan, membagikan data, atau mentransfer uang. CekDulu adalah asisten pemeriksa risiko, bukan penentu bahwa pesan pasti aman atau pasti penipuan.
 
-Status rilis saat dokumen ini ditulis: implementasi dan release gate lokal sudah tersedia; public deployment dan fresh-browser verification masih **pending**.
+Production tersedia di [https://cekdulu-gamma.vercel.app](https://cekdulu-gamma.vercel.app). Deployment terbaru telah diverifikasi pada commit `4bb749cd94351f38bb09b890a09c5a1e992a7b84`.
 
 ## Arsitektur
 
@@ -16,20 +16,24 @@ flowchart LR
   D --> E[Redaksi phone, account, email, URL]
   E --> F[Konfirmasi pengguna]
   F -->|Hanya teks tersamarkan| G[POST same-origin /api/analyze]
-  G --> H[Gemini server-side]
-  H --> I[Validasi schema dan safety]
-  I --> J[Risk heading, evidence, actions, limitations]
-  H -. timeout/provider failure .-> K[Panduan umum tanpa klasifikasi]
+  G --> H{AI_PROVIDER}
+  H -->|gemini| M[Gemini adapter server-side]
+  H -->|external| X[OpenAI-compatible adapter server-side]
+  M --> V[Validasi schema dan safety]
+  X --> V
+  V --> R[Risk heading, evidence, actions, limitations]
+  M -. timeout/provider failure .-> U[Panduan umum tanpa klasifikasi]
+  X -. timeout/provider failure .-> U
 ```
 
-Screenshot tetap berada pada alur browser OCR. Teks mentah dapat diedit dalam state komponen, tetapi hanya teks tersamarkan yang dikonfirmasi pengguna yang dikirim ke API same-origin. API key hanya dibaca server. Aplikasi tidak memiliki akun, database, message history, URL crawler, owner lookup, atau automatic reporting.
+Screenshot tetap berada pada alur browser OCR. Worker, core/WASM, dan data bahasa Tesseract untuk `eng`/`ind` dilayani dari origin CekDulu sendiri. Teks mentah dapat diedit dalam state komponen, tetapi hanya teks tersamarkan yang dikonfirmasi pengguna yang dikirim ke API same-origin. API key hanya dibaca server. `AI_PROVIDER` memilih tepat satu adapter; aplikasi tidak melakukan automatic cross-provider fallback. Aplikasi tidak memiliki akun, database, message history, URL crawler, owner lookup, atau automatic reporting.
 
 ## Prasyarat
 
 - Node.js 26
 - npm 12
 - Browser Chromium/Chrome untuk Playwright E2E
-- Gemini API key untuk analisis AI nyata
+- Credential untuk satu provider analisis: Gemini atau endpoint external OpenAI-compatible
 
 Versi yang dipakai pada release gate lokal: Node `v26.4.0` dan npm `12.0.2`.
 
@@ -40,14 +44,34 @@ npm ci
 cp .env.example .env.local
 ```
 
-Isi `.env.local` secara lokal:
+Pilih satu provider secara eksplisit. Contoh Gemini:
 
 ```dotenv
+AI_PROVIDER=gemini
 GEMINI_API_KEY=your-server-only-key
-GEMINI_MODEL=gemini-3.6-flash
 ```
 
-`GEMINI_API_KEY` bersifat **server-only**. Jangan menambahkan prefix `NEXT_PUBLIC_`, jangan menaruh key dalam source, screenshot, prompt log, atau client bundle. Pada deployment, set kedua variable melalui dashboard deployment dan bukan melalui file yang di-commit.
+Contoh endpoint external OpenAI-compatible:
+
+```dotenv
+AI_PROVIDER=external
+AI_BASE_URL=https://provider.example/v1
+AI_API_KEY=your-server-only-key
+AI_MODEL=provider-model-name
+# AI_ENABLE_THINKING=false
+```
+
+| Variable | Kegunaan |
+|---|---|
+| `AI_PROVIDER` | Wajib: `gemini` atau `external`. Tidak ada fallback otomatis ke provider lain. |
+| `GEMINI_API_KEY` | Wajib saat `AI_PROVIDER=gemini`. |
+| `GEMINI_MODEL` | Opsional untuk Gemini; default aplikasi adalah `gemini-3.6-flash`. |
+| `AI_BASE_URL` | Wajib saat `AI_PROVIDER=external`; base URL HTTPS untuk API OpenAI-compatible. |
+| `AI_API_KEY` | Wajib saat `AI_PROVIDER=external`. |
+| `AI_MODEL` | Wajib saat `AI_PROVIDER=external`; nama model ditentukan oleh environment. |
+| `AI_ENABLE_THINKING` | Opsional untuk external: literal `true` atau `false`. Jika unset, field tidak dikirim; nilai invalid membuat konfigurasi unavailable. |
+
+Semua key dan konfigurasi provider bersifat **server-only**. Jangan menambahkan prefix `NEXT_PUBLIC_`, jangan menaruh credential dalam source, screenshot, prompt log, atau client bundle. Pada deployment, set variable melalui dashboard deployment dan bukan melalui file yang di-commit.
 
 Jalankan development server:
 
@@ -69,6 +93,7 @@ Buka `http://localhost:3000`.
 | `npm run test:e2e` | Menjalankan Playwright desktop/mobile E2E. |
 | `npm run typecheck` | Menjalankan TypeScript tanpa emit. |
 | `npm run lint` | Menjalankan ESLint. |
+| `npm run prepare:tesseract` | Menyalin worker, core/WASM, dan data bahasa `eng`/`ind` dari dependency yang dipin ke `public/tesseract/`. Otomatis dijalankan sebelum `dev` dan `build`. |
 | `npm run eval:validate -- --development evaluation/development.json` | Memvalidasi 10 development fixtures. |
 | `npm run eval -- --dataset evaluation/development.json --base-url http://127.0.0.1:3000 --output evaluation/results/development.json` | Menjalankan development evaluation terhadap server lokal. |
 
@@ -86,6 +111,7 @@ npm audit --omit=dev
 ## Privacy boundary
 
 - Screenshot diproses oleh OCR di browser; file screenshot tidak dimasukkan ke request `/api/analyze`.
+- Tesseract memakai worker, core/WASM, dan data bahasa self-hosted dari path origin-local `/tesseract/`; OCR tidak mengambil asset dari CDN eksternal.
 - Teks mentah tetap berada dalam state komponen selama review.
 - Phone, account-like number, email, dan URL disamarkan di browser.
 - Request API berisi hanya `{ "message": "<confirmed redacted text>" }`.
@@ -110,11 +136,11 @@ Jangan menyebut `13/15` sebagai fraud-detection accuracy. Jika sistem berubah se
 
 ## Deployment ke Vercel
 
-Public deployment belum dijalankan pada commit dokumentasi ini. Langkah yang harus dilakukan setelah credential dan otorisasi tersedia:
+Production aktif di [https://cekdulu-gamma.vercel.app](https://cekdulu-gamma.vercel.app). Untuk deployment revision berikutnya:
 
 1. Buat atau gunakan project Vercel bernama `cekdulu`.
-2. Set `GEMINI_API_KEY` dan `GEMINI_MODEL=gemini-3.6-flash` pada dashboard untuk production environment.
-3. Pastikan tidak ada variable `NEXT_PUBLIC_GEMINI_API_KEY`.
+2. Set `AI_PROVIDER` dan variable provider yang sesuai pada dashboard untuk production environment.
+3. Pastikan tidak ada API key dengan prefix `NEXT_PUBLIC_`.
 4. Deploy release commit:
 
    ```bash
