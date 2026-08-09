@@ -794,3 +794,265 @@ Jangan merge atau push ke main dulu.
 **Keputusan:** Diterima; production OCR blocker teratasi dan Step 6 fresh-browser screenshot/privacy verification lulus tanpa melonggarkan CSP atau mengubah privacy boundary.
 
 **Artefak:** `.gitignore` · `package.json` · `package-lock.json` · `scripts/sync-tesseract-assets.mjs` · `scripts/sync-tesseract-assets.test.ts` · `src/features/message-input/ocr.ts` · `src/features/message-input/ocr.test.ts` · `docs/superpowers/plans/2026-08-08-tesseract-origin-assets.md` · `docs/ai/PROMPT_LOG.md` · deployment `https://cekdulu-gamma.vercel.app` · commit belum dibuat.
+
+## P-026 · Production timeout alignment hotfix · 2026-08-08 22:10 WITA
+
+**Tujuan:** Selaraskan deadline analysis server dengan timeout client agar provider yang lambat menghasilkan fallback HTTP 503 sebelum browser membatalkan request.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Implementasikan hotfix timeout alignment berdasarkan diagnosis yang sudah terbukti.
+
+Scope hanya analysis service/server boundary:
+
+- pertahankan client timeout 15.000 ms;
+- buat total server deadline sekitar 12 detik;
+- teruskan cancellation/deadline ke Gemini SDK;
+- jangan melakukan retry setelah timeout/cancellation;
+- retry hanya untuk output JSON/schema/semantic yang invalid;
+- jangan retry auth, quota, provider/network failure, atau timeout;
+- pastikan route mengembalikan existing unavailable/503 sebelum client timeout;
+- tambahkan safe diagnostic logging: request id, attempt, error category, elapsed time saja;
+- jangan log prompt, message, model response, API key, atau data user.
+
+Gunakan TDD untuk:
+1. server timeout menghasilkan fallback sebelum 15 detik;
+2. timeout tidak memicu attempt kedua;
+3. provider/auth/quota failure tidak diretry;
+4. invalid structured output masih boleh satu retry;
+5. logging tidak mengandung user content/secret.
+
+Jangan ubah UX, privacy boundary, result contract, atau timeout client.
+
+Setelah GREEN:
+- unit/typecheck/lint/build;
+- satu final review;
+- deploy production;
+- fresh-browser verification untuk success + forced timeout/fallback;
+- pastikan request tidak lagi berakhir NS_BINDING_ABORTED pada server-timeout case;
+- catat bukti aktual di PROMPT_LOG.
+
+Jika production verification lulus, commit hotfix dan push ke main secara normal tanpa force.
+
+</details>
+
+**Hasil:** Route sekarang memiliki total deadline 13 detik—penyesuaian minimal dari 12 detik setelah production menunjukkan tambahan response overhead 0,4–0,7 detik—sementara client tetap 15 detik. Deadline signal diteruskan ke Gemini; timeout/cancellation serta auth, quota, provider, dan network failure tidak diretry. Hanya output JSON/schema/semantic invalid yang boleh satu retry. Diagnostic log hanya berisi request id, attempt, kategori error, dan elapsed time. Production deployment final `dpl_2ZQWkGUv6ZBh26r49wtQ5JmRMoBq` READY pada alias yang sama, tetapi success verification diblokir oleh Gemini quota dan hotfix belum dikomit atau dipush.
+
+**Verifikasi:** TDD RED awal → 10 failure yang tepat untuk missing deadline/signal/retry policy/logging; focused GREEN → 3 file/14 tes lulus. Final review → tidak ada Critical/Important issue; satu gap minor schema-invalid JSON ditambahkan dan focused suite menjadi 15/15. Penyesuaian deadline 13 detik RED → route sudah settle sebelum 12.999 ms; GREEN → route settle pada 13.000 ms. Final local gate: `npm test` → 17 file/95 tes lulus; `npm run typecheck`, `npm run lint`, dan `npm run build` → exit 0. Deployment 12 detik `dpl_6GXNykLwpNTzdVhBKXStETrGsD1t` → fresh browser menerima HTTP 503 dalam 12,379–12,686 detik, fallback terlihat, dan tidak ada `requestfailed`/`NS_BINDING_ABORTED`; safe logs menunjukkan timeout attempt 1 atau invalid output attempt 1 lalu timeout attempt 2. Deployment final 13 detik → dua fresh-browser success attempts menerima HTTP 503 dalam 0,663–0,860 detik; safe logs menunjukkan `quota` pada attempt 1 sekitar 200 ms dan tidak ada retry. Nilai secret, prompt, message, dan model response tidak dibaca atau dicatat.
+
+**Keputusan:** Direvisi dan ditahan; local verification serta server-timeout behavior lulus, tetapi production success dan forced-timeout verification pada deployment final belum lulus karena external Gemini quota. Tidak dilakukan commit atau push.
+
+**Artefak:** `src/app/api/analyze/route.ts` · `src/app/api/analyze/route.test.ts` · `src/server/analysis/errors.ts` · `src/server/analysis/model.ts` · `src/server/analysis/model.test.ts` · `src/server/analysis/service.ts` · `src/server/analysis/service.test.ts` · `docs/ai/PROMPT_LOG.md` · deployment `https://cekdulu-gamma.vercel.app` · commit belum dibuat.
+
+## P-027 · Analysis provider selection · 2026-08-09 13:25 WITA
+
+**Tujuan:** Tambahkan pemilihan backend Gemini atau external OpenAI-compatible tanpa mengubah kontrak, privasi, safety, atau kebijakan timeout/retry analysis.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Tambahkan provider selection untuk analysis backend CekDulu.
+
+Gunakan environment:
+
+AI_PROVIDER=gemini | external
+
+Untuk Gemini:
+- GEMINI_API_KEY
+
+Untuk external OpenAI-compatible:
+- AI_BASE_URL
+- AI_API_KEY
+- AI_MODEL
+
+Requirements:
+- pertahankan existing Gemini implementation;
+- tambahkan generic OpenAI-compatible external adapter;
+- pilih adapter berdasarkan AI_PROVIDER;
+- jangan hardcode provider hostname atau model;
+- jangan membuat automatic cross-provider fallback;
+- external endpoint dapat diganti hanya melalui env;
+- API key hanya server-side;
+- jangan log credential, prompt, user message, atau raw model response;
+- semua provider tetap melewati existing analysis schema, semantic validation, safety filtering, retry policy, deadline/cancellation, dan safe logging;
+- jangan ubah UX, OCR, redaction, privacy boundary, atau result contract.
+
+Gunakan TDD dan satu final review.
+
+Hotfix timeout yang saat ini uncommitted harus dipertahankan dan diintegrasikan dengan provider abstraction ini, bukan dibuang.
+
+Setelah local verification lulus, STOP.
+Jangan deploy, commit, atau push dulu.
+
+</details>
+
+**Hasil:** `AI_PROVIDER` memilih Gemini atau adapter external Chat Completions; base URL, API key, dan model external wajib berasal dari env dan konfigurasi yang tidak lengkap menghasilkan existing 503 tanpa fallback ke Gemini. Kedua adapter menggunakan service yang sama untuk schema/semantic/safety validation, satu retry khusus output invalid, deadline/cancellation 13 detik, dan diagnostic metadata aman dari P-026. Tidak ada perubahan UX, OCR, redaction, privacy boundary, atau result contract.
+
+**Verifikasi:** TDD RED → tiga suite gagal karena external adapter/provider factory belum ada. Focused GREEN → 5 file/29 tes lulus. Full local gate → `npm test` 19 file/109 tes lulus; `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Build production sukses dan menjalankan self-hosted Tesseract asset preparation. Tidak dilakukan deployment dan tidak ada credential yang dibaca atau dicetak.
+
+**Keputusan:** Diterima untuk final review; hotfix timeout P-026 dipertahankan dan diintegrasikan, tanpa commit atau push.
+
+**Artefak:** `.env.example` · `src/app/api/analyze/route.ts` · `src/app/api/analyze/route.test.ts` · `src/server/analysis/errors.ts` · `src/server/analysis/external-model.ts` · `src/server/analysis/external-model.test.ts` · `src/server/analysis/model.ts` · `src/server/analysis/model.test.ts` · `src/server/analysis/provider.ts` · `src/server/analysis/provider.test.ts` · `src/server/analysis/service.ts` · `src/server/analysis/service.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-028 · Koreksi P-027 · 2026-08-09 13:31 WITA
+
+**Tujuan:** Tindak lanjuti satu final review P-027 agar structured output external kompatibel dan transport credential tidak menerima konfigurasi yang tidak aman atau ambigu.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Final review untuk provider selection harus memeriksa defect/regression, security/privacy, credential atau content leakage, provider selection, endpoint/model configurability, cancellation, retry/deadline, schema/semantic/safety continuity, tests, dan perubahan di luar scope.
+
+</details>
+
+**Hasil:** Satu final review menemukan dua Important dan satu Minor: strict schema belum menutup additional properties, URL external menerima HTTP, serta query/fragment dapat dibuang saat endpoint dibentuk. Shared analysis schema kini strict-compatible; external base URL wajib HTTPS tanpa query atau fragment. Tidak dilakukan review kedua.
+
+**Verifikasi:** Review-finding RED → 2 file/4 tes gagal tepat pada schema, HTTP, query, dan fragment. Focused GREEN → 5 file/36 tes lulus. Fresh full local gate setelah perbaikan → `npm test` 19 file/112 tes lulus; `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Tidak dilakukan deployment dan credential tidak dibaca atau dicetak.
+
+**Keputusan:** P-027 dikoreksi secara append-only dan diterima setelah seluruh finding terverifikasi serta diperbaiki tanpa perubahan UX, OCR, redaction, privacy boundary, safety behavior, atau result contract.
+
+**Artefak:** `src/domain/analysis/schema.ts` · `src/server/analysis/external-model.test.ts` · `src/server/analysis/provider.ts` · `src/server/analysis/provider.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-029 · Koreksi P-028 · 2026-08-09 13:31 WITA
+
+**Tujuan:** Koreksi blok prompt P-028 secara append-only agar mencatat prompt final review yang benar-benar digunakan tanpa parafrasa.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+You are the single final reviewer for the current CekDulu worktree `/home/lunarch/Projects/cekdulu/.worktrees/task-1-calm-guardian-shell`. This is a READ-ONLY review. Do not edit files, index, HEAD, branch, config, or run deployment/commit/push. Review the entire current uncommitted diff against HEAD, including untracked source/test files (use `git status --short`, `git diff HEAD`, and read untracked files directly).
+
+What was implemented: preserve and integrate the uncommitted P-026 timeout hotfix, plus `AI_PROVIDER=gemini|external`, existing Gemini adapter, generic OpenAI-compatible Chat Completions adapter configured only by `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, strict no cross-provider fallback, keys server-only, safe logging, and shared existing schema/semantic/safety/retry/deadline/cancellation service. No UX/OCR/redaction/privacy/result contract changes. Local evidence: focused 5 files/29 tests pass; full `npm test` 19 files/109 tests, typecheck, lint, build, diff-check pass. No deploy/commit/push requested.
+
+Review focus: defects/regressions, security/privacy, credential or content leakage, provider selection correctness, truly generic/configurable endpoint/model, cancellation propagation, timeout/retry category behavior, schema/semantic/safety continuity, tests, and out-of-scope changes. Check `.vercel/` remains unrelated/untracked and is not part of the implementation. Validate prompt log is factual/append-only without secret.
+
+Report: Strengths; Issues grouped Critical/Important/Minor with exact file:line, impact and fix; Assessment Ready locally Yes/No/With fixes. Do not modify anything.
+
+</details>
+
+**Hasil:** P-028 tetap dipertahankan; entry ini menggantikan hanya catatan prompt P-028 yang tidak verbatim. Hasil review dan perbaikannya tetap seperti tercatat pada P-028.
+
+**Verifikasi:** Prompt dibandingkan dengan instruksi final reviewer yang benar-benar dikirim → sama dan tidak memuat credential, prompt analysis, pesan pengguna privat, atau raw model response. Source verification tetap hasil fresh full gate P-028; hanya dokumentasi append-only yang berubah setelahnya.
+
+**Keputusan:** Diterima sebagai koreksi dokumentasi append-only; tidak ada perubahan source, deployment, commit, atau push.
+
+**Artefak:** `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-030 · Koreksi kompatibilitas external provider · 2026-08-09 13:37 WITA
+
+**Tujuan:** Ganti provider-native strict JSON Schema pada adapter external dengan JSON mode generik tanpa melemahkan enforcement lokal CekDulu.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Sebelum deployment, lakukan satu compatibility correction pada external provider.
+
+Karena targetnya generic OpenAI-compatible endpoint yang dapat diganti melalui AI_BASE_URL:
+- gunakan `response_format: { type: "json_object" }` untuk external adapter;
+- jangan bergantung pada provider-native strict JSON Schema support;
+- tetap sertakan format/schema CekDulu dalam system prompt;
+- pertahankan existing Zod/schema/semantic/safety validation sebagai enforcement utama;
+- jangan ubah Gemini adapter, UX, privacy boundary, timeout, atau retry policy.
+
+Tambahkan/update regression test sesuai behavior ini.
+
+Setelah local verification lulus, STOP.
+Jangan deploy/commit/push dulu.
+
+</details>
+
+**Hasil:** External adapter sekarang meminta JSON mode generik dan menyertakan shared CekDulu JSON Schema pada system message. Model output tetap diparse dan ditegakkan oleh existing Zod schema, semantic validation, safety filtering, dan retry policy pada analysis service; Gemini adapter, UX, privacy boundary, deadline/cancellation, dan result contract tidak berubah.
+
+**Verifikasi:** TDD RED → outbound-contract test gagal karena masih menerima `json_schema` dan belum menemukan system message. Focused GREEN → 5 file/32 tes lulus. Fresh full local gate → `npm test` 19 file/112 tes lulus; `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Tidak dilakukan deployment dan tidak ada credential yang dibaca atau dicetak.
+
+**Keputusan:** Diterima sebagai koreksi kompatibilitas append-only terhadap P-027/P-028; generic external adapter tidak lagi bergantung pada provider-native strict JSON Schema support.
+
+**Artefak:** `src/server/analysis/external-model.ts` · `src/server/analysis/external-model.test.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-031 · External thinking compatibility option · 2026-08-09 14:05 WITA
+
+**Tujuan:** Tambahkan opsi environment tri-state untuk mengontrol `enable_thinking` pada external adapter tanpa mengubah provider atau boundary lain.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+Bukti curl external provider:
+
+- qwen3.7-flash
+- `enable_thinking: false`
+- HTTP success
+- valid JSON
+- tidak ada reasoning_content
+- total latency ~777 ms
+
+Implementasikan compatibility option minimal pada external adapter:
+
+Environment opsional:
+AI_ENABLE_THINKING=true|false
+
+Behavior:
+- jika unset: jangan kirim field `enable_thinking`;
+- jika `false`: kirim `enable_thinking: false`;
+- jika `true`: kirim `enable_thinking: true`;
+- invalid value harus fail-safe pada configuration boundary.
+
+Jangan hardcode Qwen/provider hostname.
+Jangan ubah timeout 13s, client timeout 15s, UX, privacy, retry policy,
+schema validation, atau Gemini adapter.
+
+Gunakan TDD dan verification relevan.
+Setelah local GREEN, STOP sebelum deploy.
+Jangan commit/push dulu.
+
+</details>
+
+**Hasil:** External provider factory menerima hanya literal `true` atau `false`; unset tetap menghilangkan field, sedangkan empty, uppercase, atau nilai lain membuat konfigurasi unavailable tanpa cross-provider fallback. Adapter meneruskan boolean valid sebagai `enable_thinking` tanpa hostname/model hardcode. Gemini, timeout, UX, privacy, retry, schema, dan safety path tidak berubah.
+
+**Verifikasi:** TDD RED → 2 file/5 tes gagal tepat karena false/true belum diteruskan dan tiga nilai invalid masih diterima. Focused GREEN → 5 file/37 tes lulus. Fresh full local gate → `npm test` 19 file/117 tes lulus; `npm run typecheck`, `npm run lint`, `npm run build`, dan `git diff --check` → exit 0. Tidak dilakukan deployment dan tidak ada credential yang dibaca atau dicetak.
+
+**Keputusan:** Diterima untuk local GREEN; deployment, commit, dan push tetap ditahan sesuai instruksi.
+
+**Artefak:** `.env.example` · `src/server/analysis/provider.ts` · `src/server/analysis/provider.test.ts` · `src/server/analysis/external-model.ts` · `docs/ai/PROMPT_LOG.md` · commit belum dibuat.
+
+## P-032 · External provider production verification · 2026-08-09 14:14 WITA
+
+**Tujuan:** Deploy external provider dengan thinking dinonaktifkan dan verifikasi success, schema, latency, redaction, fallback, cancellation, serta log safety pada production.
+
+<details>
+<summary>Prompt lengkap</summary>
+
+AI_ENABLE_THINKING=false sudah dikonfigurasi di Vercel untuk Production dan Preview.
+
+Lanjutkan hanya deployment + production verification.
+
+Requirements:
+- deploy current worktree;
+- fresh-browser built-in sample;
+- pastikan /api/analyze HTTP 200;
+- pastikan result schema-valid;
+- pastikan latency berada di bawah server deadline 13 detik;
+- pastikan external provider yang aktif;
+- pastikan tidak ada reasoning_content yang dipakai/log;
+- verifikasi timeout fallback tetap HTTP 503 sebelum client 15 detik;
+- pastikan tidak ada NS_BINDING_ABORTED;
+- jangan membaca atau mencetak credential.
+
+Jika production success + fallback verification lulus:
+- update PROMPT_LOG;
+- jalankan final local gate;
+- commit seluruh hotfix/provider changes;
+- integrasikan ke main;
+- push main tanpa force.
+
+Jika gagal, STOP dan laporkan evidence sebelum mengubah source.
+
+</details>
+
+**Hasil:** Deployment production `dpl_ekcs1zm82BMz5yqVeUzvpwa6WBUg` READY pada `https://cekdulu-gamma.vercel.app`. Fresh browser built-in sample menerima HTTP 200/schema-valid dalam 6.415 detik melalui strict external-provider selection tanpa cross-provider fallback. Production UI forced-fallback menerima existing HTTP 503 dalam 13.104 detik, menampilkan guidance dan Retry tanpa klasifikasi, serta tidak mengalami request failure atau `NS_BINDING_ABORTED`.
+
+**Verifikasi:** Success request hanya membawa satu field `message`, sama dengan sample sintetis confirmed-redacted, berisi `[URL_1]`/`[PHONE_1]`, dan tidak memuat URL/nomor mentah. API response tidak memuat `reasoning_content`. Vercel menampilkan hanya nama `AI_PROVIDER`, `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, dan `AI_ENABLE_THINKING` sebagai Hidden/Sensitive; nilainya tidak dibaca atau dicetak. Audit deployment logs → 7 request berstatus 200, nol runtime log, serta tidak ada sample content, redaction token, prompt instruction, model response fields, atau `reasoning_content`. Final local gate dijalankan setelah entry ini.
+
+**Keputusan:** Diterima untuk production success dan fallback verification; lanjut ke final local gate, commit, fast-forward main, dan push tanpa force.
+
+**Artefak:** `docs/ai/PROMPT_LOG.md` · deployment `https://cekdulu-gamma.vercel.app` · commit belum dibuat.

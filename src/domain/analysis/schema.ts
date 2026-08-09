@@ -35,16 +35,17 @@ export type SignalCategory = z.infer<typeof signalCategorySchema>;
 
 export const analysisJsonSchema = {
   type: "object",
+  additionalProperties: false,
   properties: {
     version: { type: "string", enum: ["1"] },
     riskLevel: { type: "string", enum: ["low", "medium", "high"] },
     summary: { type: "string" },
-    signals: { type: "array", items: { type: "object", properties: {
+    signals: { type: "array", items: { type: "object", additionalProperties: false, properties: {
       quote: { type: "string" },
       category: { type: "string", enum: signalCategorySchema.options },
       explanation: { type: "string" },
     }, required: ["quote", "category", "explanation"] } },
-    actions: { type: "array", items: { type: "object", properties: {
+    actions: { type: "array", items: { type: "object", additionalProperties: false, properties: {
       priority: { type: "integer" }, title: { type: "string" }, instruction: { type: "string" },
     }, required: ["priority", "title", "instruction"] } },
     limitations: { type: "array", items: { type: "string" } },

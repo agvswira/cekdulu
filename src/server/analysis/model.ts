@@ -1,7 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
+import { InvalidModelOutputError } from "./errors";
 
 export interface StructuredModel {
-  generate(prompt: string, schema: Record<string, unknown>): Promise<string>;
+  generate(
+    prompt: string,
+    schema: Record<string, unknown>,
+    signal: AbortSignal,
+  ): Promise<string>;
 }
 
 export class GeminiStructuredModel implements StructuredModel {
@@ -11,17 +16,22 @@ export class GeminiStructuredModel implements StructuredModel {
     this.client = new GoogleGenAI({ apiKey });
   }
 
-  async generate(prompt: string, schema: Record<string, unknown>) {
+  async generate(
+    prompt: string,
+    schema: Record<string, unknown>,
+    signal: AbortSignal,
+  ) {
     const response = await this.client.models.generateContent({
       model: this.model,
       contents: prompt,
       config: {
+        abortSignal: signal,
         temperature: 0.1,
         responseMimeType: "application/json",
         responseJsonSchema: schema,
       },
     });
-    if (!response.text) throw new Error("EMPTY_MODEL_RESPONSE");
+    if (!response.text) throw new InvalidModelOutputError();
     return response.text;
   }
 }
