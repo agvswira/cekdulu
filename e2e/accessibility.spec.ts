@@ -24,7 +24,7 @@ async function expectNoSeriousAxeViolations(page: Page) {
 
 async function expectVisibleTouchTargets(page: Page) {
   const touchTargets = await page
-    .locator("header a, main a, main button, main input[type=file], main fieldset label")
+    .locator("header a, main a, main button, main .uploadAction, main fieldset label")
     .evaluateAll((targets) => targets.map((target) => {
       const box = target.getBoundingClientRect();
       return {

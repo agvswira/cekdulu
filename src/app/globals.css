@@ -1,16 +1,18 @@
 :root {
   --ink: #132c3e;
   --muted: #58717b;
-  --paper: #f6f2e8;
-  --surface: #fffdf7;
+  --paper: #f7f4ed;
+  --surface: #fffefa;
   --trust: #0e7c73;
   --trust-soft: #e2f3ed;
   --warning: #e08a15;
   --warning-soft: #fff0cf;
   --danger: #b83a2e;
-  --line: #ddd8cc;
-  --radius-lg: 20px;
-  --shadow: 0 18px 45px rgba(19,44,62,.10);
+  --danger-soft: #fae9e4;
+  --line: #dedbd2;
+  --radius-lg: 18px;
+  --radius-control: 10px;
+  --shadow: 0 18px 48px rgba(19, 44, 62, 0.065);
   color-scheme: light;
 }
 
@@ -21,14 +23,13 @@
 html {
   min-width: 320px;
   background: var(--paper);
+  scroll-behavior: smooth;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at top right, rgba(14, 124, 115, 0.09), transparent 34rem),
-    var(--paper);
+  background: var(--paper);
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 1rem;
@@ -56,8 +57,15 @@ button:focus-visible {
 }
 
 .appShell {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
   width: min(100% - 2rem, 74rem);
   margin-inline: auto;
+}
+
+.appShell main {
+  flex: 1;
 }
 
 .brandHeader {
@@ -65,8 +73,8 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  min-height: 5.5rem;
-  border-bottom: 1px solid var(--line);
+  min-height: 5.25rem;
+  padding-block: 0.65rem;
 }
 
 .brand {
@@ -91,65 +99,61 @@ button:focus-visible {
 
 .privacyCue {
   color: var(--trust);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 0.95fr);
+  grid-template-columns: minmax(0, 1.02fr) minmax(25rem, 0.98fr);
   align-items: start;
-  gap: clamp(2.5rem, 7vw, 6.5rem);
-  min-height: calc(100vh - 5.5rem);
-  min-height: calc(100svh - 5.5rem);
-  padding-block: clamp(3.5rem, 8vw, 7rem);
+  gap: clamp(3rem, 6vw, 6rem);
+  padding-block: clamp(3rem, 5vw, 5rem) clamp(2.5rem, 4vw, 3.5rem);
+}
+
+.hero:has(.checkPanel--expanded) {
+  width: min(100%, 52rem);
+  grid-template-columns: minmax(0, 1fr);
+  margin-inline: auto;
+  padding-block: clamp(2.5rem, 5vw, 4rem) 5rem;
+}
+
+.hero:has(.checkPanel--expanded) .heroIntro {
+  display: none;
 }
 
 .heroIntro {
-  position: sticky;
-  top: 2rem;
-  padding-top: clamp(1rem, 4vw, 3rem);
-}
-
-.eyebrow {
-  margin: 0 0 1rem;
-  color: var(--trust);
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
+  padding-top: clamp(1.25rem, 4vw, 3.25rem);
 }
 
 h1 {
-  max-width: 12ch;
+  max-width: 13ch;
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.75rem, 8vw, 6.25rem);
+  font-size: clamp(3.25rem, 5.3vw, 5.15rem);
   font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  letter-spacing: -0.05em;
+  line-height: 1.02;
   text-wrap: balance;
 }
 
 .heroCopy {
-  max-width: 42rem;
-  margin: 1.75rem 0 0;
+  max-width: 33rem;
+  margin: 1.65rem 0 0;
   color: var(--muted);
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-size: clamp(1.06rem, 1.7vw, 1.2rem);
 }
 
 .privacyNote {
   display: flex;
   align-items: flex-start;
   gap: 0.9rem;
-  max-width: 42rem;
-  margin-top: 2.5rem;
-  padding: 1.1rem 1.2rem;
-  border: 1px solid rgba(14, 124, 115, 0.22);
+  max-width: 33rem;
+  margin-top: 2.25rem;
+  padding: 1rem 1.15rem;
   border-radius: var(--radius-lg);
   background: var(--trust-soft);
-  box-shadow: var(--shadow);
   color: var(--ink);
 }
 
@@ -158,20 +162,36 @@ h1 {
 }
 
 .privacyNoteMark {
-  color: var(--trust);
-  font-size: 1.15rem;
-  font-weight: 800;
-  line-height: 1.5;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 auto;
 }
 
 .checkPanel {
   align-self: start;
   min-width: 0;
-  padding: clamp(1.4rem, 4vw, 2.25rem);
-  border: 1px solid var(--line);
+  padding: clamp(1.5rem, 3.4vw, 2.25rem);
   border-radius: var(--radius-lg);
-  background: rgba(255, 253, 247, 0.94);
+  background: var(--surface);
   box-shadow: var(--shadow);
+  animation: panel-enter 220ms ease-out both;
+}
+
+@keyframes panel-enter {
+  from { transform: translateY(8px); }
+  to { transform: translateY(0); }
+}
+
+.checkPanel > section > p,
+.checkPanel > section > form > p {
+  color: var(--muted);
+}
+
+.checkPanel [role="alert"] {
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-control);
+  background: var(--danger-soft);
+  color: #85291f;
 }
 
 .checkPanel h2,
@@ -185,19 +205,19 @@ h1 {
 .checkPanel h3,
 .checkPanel h4 {
   color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
-  line-height: 1.15;
+  font-family: inherit;
+  line-height: 1.2;
 }
 
 .checkPanel h2 {
   margin: 0;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  letter-spacing: -0.035em;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  letter-spacing: -0.04em;
 }
 
 .checkPanel h3 {
   margin: 0 0 1rem;
-  font-size: 1.25rem;
+  font-size: 1.16rem;
 }
 
 .checkPanel h4 {
@@ -210,39 +230,39 @@ h1 {
 }
 
 .checkPanel [data-stage-heading]:focus {
-  border-radius: 0.35rem;
-  outline: 3px solid var(--trust);
-  outline-offset: 6px;
+  outline: none;
 }
 
 .checkPanel fieldset {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.6rem;
   padding: 0;
-  margin: 1.5rem 0;
+  margin: 1.65rem 0 1.5rem;
   border: 0;
 }
 
 .checkPanel legend {
   width: 100%;
-  margin-bottom: 0.15rem;
-  font-weight: 800;
+  margin-bottom: 0.35rem;
+  font-size: 0.94rem;
+  font-weight: 700;
 }
 
 .checkPanel fieldset label {
   display: flex;
   min-width: 0;
-  min-height: 3rem;
+  min-height: 3.25rem;
   flex: 1 1 9rem;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.65rem 0.8rem;
+  gap: 0.7rem;
+  padding: 0.65rem 0.9rem;
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-control);
   background: var(--surface);
   cursor: pointer;
   font-weight: 700;
+  transition: border-color 180ms ease, background-color 180ms ease;
 }
 
 .checkPanel fieldset label:has(input:checked) {
@@ -260,41 +280,72 @@ h1 {
 .checkPanel label[for] {
   display: block;
   margin-top: 1.25rem;
-  font-weight: 800;
+  font-weight: 700;
 }
 
-.checkPanel input[type="file"],
 .checkPanel textarea {
   width: 100%;
   min-height: 3rem;
   margin-top: 0.45rem;
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border: 1px solid #bfcac7;
+  border-radius: var(--radius-control);
   background: var(--surface);
   color: var(--ink);
   font: inherit;
 }
 
-.checkPanel input[type="file"] {
-  padding: 0.45rem;
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.checkPanel input[type="file"]::file-selector-button {
-  min-height: 2.5rem;
-  margin-right: 0.75rem;
-  padding: 0.5rem 0.85rem;
-  border: 0;
-  border-radius: 0.55rem;
-  background: var(--trust-soft);
-  color: var(--ink);
+.checkPanel .uploadAction {
+  display: flex;
+  width: 100%;
+  min-height: 3.6rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  padding: 0.85rem 1.25rem;
+  border: 2px solid var(--trust);
+  border-radius: var(--radius-control);
+  background: var(--trust);
+  color: var(--surface);
   cursor: pointer;
-  font: inherit;
-  font-weight: 800;
+  font-size: 1.02rem;
+  font-weight: 750;
+  text-align: center;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.uploadAction:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.fileInput:focus-visible + .uploadAction {
+  outline: 3px solid var(--trust);
+  outline-offset: 4px;
+}
+
+.fileInput:disabled + .uploadAction {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.fieldHelp {
+  margin: 0.7rem 0 0;
+  color: var(--muted);
+  font-size: 0.91rem;
 }
 
 .checkPanel textarea {
-  min-height: 11rem;
-  padding: 0.85rem;
+  min-height: 12rem;
+  padding: 0.9rem 1rem;
   resize: vertical;
 }
 
@@ -305,7 +356,29 @@ h1 {
 }
 
 .checkPanel form .primaryButton {
-  margin-top: 1rem;
+  margin-top: 1.2rem;
+}
+
+.checkPanel form h3 {
+  margin-top: 2rem;
+}
+
+.checkPanel form h3 + ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.checkPanel form h3 + ul li {
+  padding: 0.35rem 0.65rem;
+  border-radius: 7px;
+  background: var(--trust-soft);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .checkPanel button:disabled {
@@ -317,7 +390,7 @@ h1 {
   max-width: 100%;
   padding: 1rem;
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-control);
   background: var(--paper);
   font: inherit;
   overflow-wrap: anywhere;
@@ -331,8 +404,8 @@ h1 {
 }
 
 .checkPanel > .samplePanel {
-  padding-top: 2rem;
-  margin-top: 2rem;
+  padding-top: 1.5rem;
+  margin-top: 2.1rem;
   border-top: 1px solid var(--line);
 }
 
@@ -346,42 +419,43 @@ h1 {
 }
 
 .samplePanel > p:not(.sectionKicker, .samplePrivacy) {
-  margin: 1rem 0 0;
+  margin: 0.6rem 0 0;
   color: var(--muted);
 }
 
 .sampleMessage {
-  margin: 1.5rem 0;
-  padding: 1.15rem;
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--warning);
-  border-radius: 0.8rem;
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--warning);
+  border-radius: var(--radius-control);
   background: var(--paper);
 }
 
 .sampleMessage span {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.77rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .sampleMessage p {
-  margin: 0.5rem 0 0;
+  margin: 0.3rem 0 0;
+  font-size: 0.94rem;
+  line-height: 1.5;
 }
 
 .primaryButton,
 .secondaryButton {
   display: inline-flex;
-  min-height: 3rem;
+  min-height: 3.25rem;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.2rem;
-  border: 2px solid var(--trust);
-  border-radius: 999px;
+  padding: 0.75rem 1.15rem;
+  border: 1px solid var(--trust);
+  border-radius: var(--radius-control);
   cursor: pointer;
-  font-weight: 800;
+  font-weight: 750;
   text-decoration: none;
   transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
 }
@@ -393,9 +467,13 @@ h1 {
 }
 
 .secondaryButton {
-  margin-top: 1rem;
+  margin-top: 1.15rem;
   background: transparent;
   color: var(--trust);
+}
+
+.samplePanel .secondaryButton {
+  width: 100%;
 }
 
 .primaryButton:hover,
@@ -414,15 +492,8 @@ h1 {
   transform: translateY(1px);
 }
 
-.samplePrivacy {
-  margin: 0.8rem 0 0;
-  color: var(--muted);
-  font-size: 0.85rem;
-  text-align: center;
-}
-
 .loadingState {
-  min-height: 24rem;
+  min-height: 17rem;
   align-content: center;
   justify-items: center;
   text-align: center;
@@ -483,6 +554,11 @@ h1 {
   color: #784600 !important;
 }
 
+.riskBadge--high {
+  background: var(--danger-soft);
+  color: #85291f !important;
+}
+
 .resultSummary {
   margin: 1rem 0 0;
   font-size: 1.08rem;
@@ -511,7 +587,7 @@ h1 {
 .evidenceCard {
   padding: 1rem;
   border: 1px solid rgba(224, 138, 21, 0.32);
-  border-radius: 0.8rem;
+  border-radius: var(--radius-control);
   background: #fffaf0;
 }
 
@@ -543,8 +619,84 @@ h1 {
   gap: 0.85rem;
   padding: 1rem;
   border: 1px solid rgba(14, 124, 115, 0.22);
-  border-radius: 0.8rem;
+  border-radius: var(--radius-control);
   background: var(--trust-soft);
+}
+
+.processGuide {
+  padding: 1.5rem 0 4rem;
+}
+
+.appShell:has(.checkPanel--expanded) .processGuide {
+  display: none;
+}
+
+.processIntro {
+  margin-bottom: 1.25rem;
+}
+
+.processIntro h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.3rem);
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+.processSteps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  list-style: none;
+  box-shadow: var(--shadow);
+}
+
+.processSteps li {
+  min-width: 0;
+  padding: clamp(1.25rem, 2.4vw, 1.75rem);
+}
+
+.processSteps li + li {
+  border-left: 1px solid var(--line);
+}
+
+.processSteps span {
+  display: inline-block;
+  margin-bottom: 0.55rem;
+  color: var(--trust);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.processSteps h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.processSteps p {
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+}
+
+.siteFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding: 1.5rem 0 2rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.siteFooter a {
+  color: var(--trust);
+  font-weight: 700;
+  text-underline-offset: 0.2rem;
 }
 
 .actionCard p {
@@ -602,22 +754,53 @@ h1 {
   color: var(--muted);
 }
 
+.stateActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.3rem;
+}
+
+.stateActions .primaryButton,
+.stateActions .secondaryButton {
+  width: auto;
+  margin-top: 0;
+}
+
 .safetyStepList {
   margin-top: 1.25rem;
   padding: 1rem;
   border: 1px solid rgba(14, 124, 115, 0.22);
-  border-radius: 0.8rem;
+  border-radius: var(--radius-control);
   background: var(--trust-soft);
 }
 
-@media (max-width: 47.5rem) {
+@media (max-width: 64rem) {
   .hero {
+    width: min(100%, 48rem);
     grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    margin-inline: auto;
   }
 
   .heroIntro {
-    position: static;
     padding-top: 0;
+  }
+
+  h1 {
+    max-width: 15ch;
+    font-size: clamp(3rem, 7vw, 4.35rem);
+  }
+}
+
+@media (max-width: 47.5rem) {
+  .processSteps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .processSteps li + li {
+    border-top: 1px solid var(--line);
+    border-left: 0;
   }
 }
 
@@ -627,18 +810,20 @@ h1 {
   }
 
   .brandHeader {
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 7.5rem;
+    min-height: 5rem;
+    gap: 0.75rem;
   }
 
   .hero {
-    min-height: calc(100svh - 7.5rem);
-    padding-block: 2.75rem;
+    gap: 1.5rem;
+    padding-block: 1.35rem 3rem;
   }
 
   .privacyCue {
+    max-width: 9.5rem;
+    font-size: 1rem;
+    line-height: 1.25;
+    text-align: right;
     white-space: normal;
   }
 
@@ -646,17 +831,56 @@ h1 {
     padding: 1.25rem;
   }
 
-  .checkPanel fieldset label {
-    flex-basis: 100%;
+  .hero:has(.checkPanel--expanded) {
+    padding-block: 2rem 3rem;
   }
 
-  .privacyCue,
-  .eyebrow,
+  h1 {
+    font-size: clamp(2.5rem, 10.4vw, 3.3rem);
+  }
+
+  .heroCopy {
+    margin-top: 1rem;
+  }
+
+  .privacyNote {
+    margin-top: 1.3rem;
+    padding: 0.85rem 0.95rem;
+  }
+
+  .checkPanel fieldset label {
+    gap: 0.45rem;
+    padding-inline: 0.55rem;
+    font-size: 0.9rem;
+  }
+
+  .checkPanel input[type="radio"] {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
   .sectionKicker,
   .sampleMessage span,
-  .samplePrivacy,
   .evidenceCard .signalCategory {
     font-size: 1rem;
+  }
+
+  .processGuide {
+    padding: 1.25rem 0 3rem;
+  }
+
+  .processSteps {
+    box-shadow: 0 10px 28px rgba(19, 44, 62, 0.045);
+  }
+
+  .processSteps span {
+    margin-bottom: 0.25rem;
+  }
+
+  .siteFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-block: 1.25rem 2rem;
   }
 }
 
@@ -671,6 +895,10 @@ h1 {
   }
 
   .loadingMark {
+    animation: none;
+  }
+
+  .checkPanel {
     animation: none;
   }
 }

@@ -2,9 +2,10 @@ interface UnavailableStateProps {
   message: string;
   safetySteps: readonly string[];
   onRetry: () => void;
+  onReset?: () => void;
 }
 
-export function UnavailableState({ message, safetySteps, onRetry }: UnavailableStateProps) {
+export function UnavailableState({ message, safetySteps, onRetry, onReset }: UnavailableStateProps) {
   return (
     <section className="unavailableState" aria-labelledby="unavailable-heading">
       <p className="sectionKicker">Panduan aman sementara</p>
@@ -15,9 +16,16 @@ export function UnavailableState({ message, safetySteps, onRetry }: UnavailableS
       <ul className="safetyStepList">
         {safetySteps.map((step) => <li key={step}>{step}</li>)}
       </ul>
-      <button className="secondaryButton" type="button" onClick={onRetry}>
-        Coba lagi
-      </button>
+      <div className="stateActions">
+        <button className="primaryButton" type="button" onClick={onRetry}>
+          Coba lagi
+        </button>
+        {onReset ? (
+          <button className="secondaryButton" type="button" onClick={onReset}>
+            Periksa pesan lain
+          </button>
+        ) : null}
+      </div>
     </section>
   );
 }

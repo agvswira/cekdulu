@@ -171,7 +171,7 @@ export function CheckMessageFlow({
     const progressPercent = Math.round(flow.state.progress * 100);
     return (
       <section
-        className="checkPanel loadingState"
+        className="checkPanel checkPanel--expanded loadingState"
         ref={setStageContainer}
         role="status"
         aria-live="polite"
@@ -192,7 +192,7 @@ export function CheckMessageFlow({
 
   if (flow.state.stage === "review") {
     return (
-      <div className="checkPanel" ref={setStageContainer}>
+      <div className="checkPanel checkPanel--expanded" ref={setStageContainer}>
         <MessageReview
           initialText={flow.state.rawText}
           onConfirm={handleConfirm}
@@ -204,7 +204,7 @@ export function CheckMessageFlow({
   if (flow.state.stage === "analyzing") {
     return (
       <section
-        className="checkPanel loadingState loadingState--analysis"
+        className="checkPanel checkPanel--expanded loadingState loadingState--analysis"
         ref={setStageContainer}
         role="status"
         aria-live="polite"
@@ -219,7 +219,7 @@ export function CheckMessageFlow({
 
   if (flow.state.stage === "result") {
     return (
-      <div className="checkPanel" ref={setStageContainer}>
+      <div className="checkPanel checkPanel--expanded" ref={setStageContainer}>
         <AnalysisResultView analysis={flow.state.analysis} />
         <button className="secondaryButton" type="button" onClick={handleReset}>
           Periksa pesan lain
@@ -230,15 +230,13 @@ export function CheckMessageFlow({
 
   if (flow.state.stage === "unavailable") {
     return (
-      <div className="checkPanel" ref={setStageContainer}>
+      <div className="checkPanel checkPanel--expanded" ref={setStageContainer}>
         <UnavailableState
           message={flow.state.message}
           safetySteps={flow.state.safetySteps}
           onRetry={handleRetry}
+          onReset={handleReset}
         />
-        <button className="secondaryButton" type="button" onClick={handleReset}>
-          Periksa pesan lain
-        </button>
       </div>
     );
   }
@@ -251,20 +249,17 @@ export function CheckMessageFlow({
         recognizeImage={recognizeForFlow}
       />
       <section className="samplePanel" aria-labelledby="sample-heading">
-        <p className="sectionKicker">Demo tanpa data pribadi</p>
-        <h2 id="sample-heading">Atau coba contoh CekDulu</h2>
+        <h2 id="sample-heading">Ingin melihat contohnya?</h2>
         <p>
-          Gunakan contoh sintetis yang sudah disamarkan untuk melihat cara hasil
-          dijelaskan.
+          Coba pesan sintetis yang sudah disamarkan.
         </p>
         <blockquote className="sampleMessage">
           <span>{SAMPLE_MESSAGE.label}</span>
           <p>{SAMPLE_MESSAGE.redactedText}</p>
         </blockquote>
-        <button className="primaryButton" type="button" onClick={handleSample}>
+        <button className="secondaryButton" type="button" onClick={handleSample}>
           Coba contoh pesan
         </button>
-        <p className="samplePrivacy">Tidak memakai pesan, gambar, atau data pribadi Anda.</p>
       </section>
     </div>
   );

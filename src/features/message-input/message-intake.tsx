@@ -35,6 +35,7 @@ export function MessageIntake({
   recognizeImage = recognizeMessageImage,
 }: MessageIntakeProps) {
   const imageInputId = useId();
+  const imageHelpId = useId();
   const textInputId = useId();
   const textHelpId = useId();
   const isMounted = useRef(true);
@@ -107,8 +108,7 @@ export function MessageIntake({
         Periksa pesan
       </h2>
       <p>
-        Gambar dibaca di perangkat ini. Cek dan samarkan teks sebelum mengirimnya
-        untuk analisis.
+        Pilih tangkapan layar atau tempel teks pesan yang ingin diperiksa.
       </p>
 
       <fieldset>
@@ -118,36 +118,45 @@ export function MessageIntake({
             type="radio"
             name="message-source"
             value="image"
+            aria-label="Unggah gambar"
             checked={source === "image"}
             disabled={isExtracting}
             onChange={() => selectSource("image")}
           />
-          Unggah gambar
+          Gambar
         </label>
         <label>
           <input
             type="radio"
             name="message-source"
             value="text"
+            aria-label="Tempel teks"
             checked={source === "text"}
             disabled={isExtracting}
             onChange={() => selectSource("text")}
           />
-          Tempel teks
+          Teks
         </label>
       </fieldset>
 
       {source === "image" ? (
-        <div>
-          <label htmlFor={imageInputId}>Unggah tangkapan layar</label>
+        <div className="uploadControl">
           <input
             id={imageInputId}
+            className="fileInput"
             type="file"
             accept="image/png,image/jpeg"
+            aria-label="Unggah tangkapan layar"
+            aria-describedby={imageHelpId}
             disabled={isExtracting}
             onChange={handleImageChange}
           />
-          <p>Format PNG atau JPEG, maksimal 5 MB.</p>
+          <label className="uploadAction" htmlFor={imageInputId}>
+            Pilih tangkapan layar
+          </label>
+          <p className="fieldHelp" id={imageHelpId}>
+            PNG atau JPEG, maksimal 5 MB. Gambar dibaca di perangkat ini.
+          </p>
 
           {isExtracting ? (
             <div role="status" aria-live="polite">

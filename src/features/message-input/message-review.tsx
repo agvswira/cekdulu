@@ -62,8 +62,7 @@ export function MessageReview({ initialText, onConfirm }: MessageReviewProps) {
           onChange={(event) => setText(event.target.value)}
         />
         <p id={editorHelpId}>
-          Jika hasil baca kurang jelas, koreksi teks atau kembali untuk memotong gambar
-          lebih dekat.
+          Perbaiki kata yang kurang jelas langsung di kotak ini.
         </p>
 
         <h3>Yang akan disamarkan</h3>
