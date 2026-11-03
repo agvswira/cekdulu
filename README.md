@@ -8,6 +8,8 @@ Production tersedia di [https://cekdulu-gamma.vercel.app](https://cekdulu-gamma.
 
 ## Arsitektur
 
+<!-- Batas privasi: screenshot diproses di browser; hanya teks tersamarkan yang dikonfirmasi pengguna dikirim ke API. -->
+
 ```mermaid
 flowchart LR
   A[Screenshot di browser] --> B[Tesseract OCR di browser]
