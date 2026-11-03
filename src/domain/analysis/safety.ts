@@ -7,6 +7,7 @@ function normalizeText(text: string) {
   return text.replace(/\s+/g, " ").trim().toLowerCase();
 }
 
+// CekDulu only reports risk levels, so any definitive "safe" or "fraud" wording must be rejected.
 export function containsAbsoluteVerdict(text: string) {
   return ABSOLUTE_VERDICT_PATTERN.test(text);
 }
