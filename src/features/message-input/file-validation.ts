@@ -7,7 +7,7 @@ export type ImageValidationResult =
   | { valid: false; code: ImageValidationErrorCode };
 
 const SUPPORTED_IMAGE_TYPES = new Set(["image/png", "image/jpeg"]);
-// 5 MiB upper bound keeps in-browser OCR responsive on low-end phones.
+// Limit is on file size in bytes (5 MiB), not on image pixel dimensions.
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 export function validateImageFile(file: File): ImageValidationResult {
